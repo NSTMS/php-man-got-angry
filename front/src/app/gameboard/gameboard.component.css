@@ -1,0 +1,6 @@
+.fields{
+  display:grid;
+  place-content: center;
+  grid-gap:1rem;
+  grid-template-columns: repeat(11, 50px);
+}
