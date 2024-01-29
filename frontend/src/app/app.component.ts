@@ -2,32 +2,16 @@ import { Component, WritableSignal, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { protocol,host, port, dir } from '../assets/connection';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders,HttpClientModule } from '@angular/common/http';
+import { GameLayoutComponent } from "./game_elements/game-layout/game-layout.component";
+import { AddPlayerComponent } from "./add-player/add-player.component";
+
+
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+    selector: 'app-root',
+    standalone: true,
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.css',
+    imports: [CommonModule, RouterOutlet, HttpClientModule, GameLayoutComponent, AddPlayerComponent]
 })
-export class AppComponent {
-  title = 'pomocy co ja tutaj robię';
-  in_progress: WritableSignal<boolean> = signal(false);
-
-  constructor(private http: HttpClient) {}
-
-  ngOnInit(){
-    if(sessionStorage.getItem("session_id")){
-      this.in_progress.set(true);
-    }
-    const headers = new HttpHeaders()
-    .set('mode','cors')
-    .set('Access-Control-Allow-Origin','*')
-    .set('Access-Control-Allow-Headers','*')
-    .set("Content-Type","application/json")
-    
-    this.http.get(`${protocol}://${host}:${port}/${dir}`, { headers: headers, observe: 'response' })
-    .subscribe((response: any) => {
-     console.log(response.body);
-    })
-  }}
+export class AppComponent {}

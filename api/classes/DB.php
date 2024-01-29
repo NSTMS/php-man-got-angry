@@ -1,5 +1,7 @@
 <?php
 require_once "./SleekDB/src/Store.php";
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: *");
 
 class DataController{
     protected static function _filter_data($data, $filter){
@@ -42,11 +44,11 @@ class DB extends DataController{
     }
 
     public function _filter($data, $filter) {
-        return parent::_filterData($data, $filter);
+        return parent::_filter_data($data, $filter);
     }
 
     public function _update($doc_id, $new_data){
-        $this->db->updateById($doc_id, $dnew_dataata);
+        $this->db->updateById($doc_id, $new_data);
     }
 
     public function _insert($data){
