@@ -4,18 +4,20 @@ import { protocol,host,port,dir } from "../assets/connection";
 export class ApiRequest{
     method: "GET" | "POST" | "PUT" | "DELETE" = "GET";
     headers: Header;
-    mode : "text" | "json" = "text"
+    mode : "text" | "json" = "text";
+    params: string;
 
-    constructor(apiMethod: "GET" | "POST" | "PUT" | "DELETE" = "GET", apiHeaders: Header = new Header("json-default"), apiMode: "text" | "json" = "json"){
+
+    constructor(apiMethod: "GET" | "POST" | "PUT" | "DELETE" = "GET",apiParams: Record<string, string>[] = [] , apiMode: "text" | "json" = "json",apiHeaders: Header = new Header("json-default")){
         this.method = apiMethod;
         this.headers = apiHeaders;
         this.mode = apiMode;
+        this.params = ApiRequestHelper._prepare_params(apiParams);
     }
 
-    async _exec_get(param: Record<string, string>[] = []){
-        const params = ApiRequestHelper._prepare_params(param);
+    async _exec_get(){
         try {
-            const request = await fetch(`${protocol}://${host}:${port}/${dir}/${params}`,{
+            const request = await fetch(`${protocol}://${host}:${port}/${dir}${this.params}`,{
                 method:this.method,
                 headers:this.headers as {},
             })
@@ -31,10 +33,9 @@ export class ApiRequest{
         }
     }
 
-    async _exec_post(body: any = {}, param: Record<string, string>[] = []) {
+    async _exec_post(body: any = {}) {
         try {
-            const params = ApiRequestHelper._prepare_params(param);
-            const request = await fetch(`${protocol}://${host}:${port}/${dir}/${params}`,{
+            const request = await fetch(`${protocol}://${host}:${port}/${dir}${this.params}`,{
                 method:this.method,
                 headers:this.headers as {},
                 body: body
@@ -65,7 +66,7 @@ class ApiRequestHelper{
     static _prepare_params(param: Record<string, string>[])
     {
         let response = "";
-        param.forEach((p,q) => response += `?${p}=${q}`);
+        param.forEach((p,q) => response += `?${p}=${q}&`);
         return response;
     } 
 

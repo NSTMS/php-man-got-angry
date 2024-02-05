@@ -1,23 +1,9 @@
 <?php
 require_once "./SleekDB/src/Store.php";
+require_once "./DataController.php";
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
-
-class DataController{
-    protected static function _filter_data($data, $filter){
-        $output = array();
-        foreach($filter as $key){
-            if(isset($data[$key])) 
-                $output[$key] = $data[$key];
-        }
-        return $output;
-    }
-
-    protected static function _count_data($data){
-        return $data.size();
-    }
-
-} 
 
 class DB extends DataController{
     public $db_name;
