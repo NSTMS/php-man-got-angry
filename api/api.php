@@ -5,14 +5,22 @@ require_once "./classes/DB.php";
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: *");
 
-$db = new DB("players");
+$players_db = new DB("players");
+$rooms_db = new DB("rooms");
 
-if ($_SERVER['REQUEST_METHOD'] === 'GET'
-    and isset($_GET["mode"]) 
-    and $_GET["mode"] === "players"
-    ){
-    $players = $db->_get_all();
+if ($_SERVER['REQUEST_METHOD'] === 'GET'){
+    $players_db->_delete_by(["player_status","=","in_lobby_not_ready"]);
+    $rooms_db->_delete_by(["game_status","=","created"]);
+
+    $rooms = $rooms_db->_get_all();
+    $players = $players_db->_get_all();
+    echo "<br>players: <br>";    
     echo json_encode($players);    
+    echo "<br> rooms: <br>";    
+    echo json_encode($rooms);    
+
+
+
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'PUT_ME_INTO_COMA') {

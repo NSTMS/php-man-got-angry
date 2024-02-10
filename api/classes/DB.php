@@ -1,9 +1,7 @@
 <?php
 require_once "./SleekDB/src/Store.php";
-require_once "./DataController.php";
+require_once "DataController.php";
 
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: *");
 
 class DB extends DataController{
     public $db_name;
@@ -15,7 +13,6 @@ class DB extends DataController{
         $this->db = new \SleekDB\Store($this->db_name, $db_dir);
     }
 
-
     public function _get_all()
     {
         return $this->db->findAll();
@@ -25,7 +22,7 @@ class DB extends DataController{
         return $this->db->findBy($filter_props);
     }
 
-    public function _get_byId($doc_id){
+    public function _get_by_id($doc_id){
         return $this->db->findById($doc_id);
     }
 
@@ -55,6 +52,14 @@ class DB extends DataController{
         return $this->db->deleteById($id);
     }
 
-   
+    static function _generate_uid(){
+        $uid = "";
+        for($i =  0; $i <  4; $i++) {
+            $part = (rand(0,  46655));
+            $part = str_pad(base_convert($part,  10,  36),  3, '0', STR_PAD_LEFT);
+            $uid .= $part . "-";
+        }
+        return rtrim($uid, '-');
+    }
 
 }

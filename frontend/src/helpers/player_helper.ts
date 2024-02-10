@@ -1,19 +1,38 @@
 import { ApiRequest } from "./api_helpers";
+import type { Game, Player } from "./types/apiResponsesTypes";
+import { find_game } from "./game_helpers";
 
-// to wsm nie jest potrzebne bo sprawdzamy ssid a nie nick
-export const check_player_existance = (nickname: string) => {
-    const req = new ApiRequest("GET",[{"get":"players"}],"json");
-    req._exec_get();
-    return false;
+export const check_player_existance = (): Game | null =>{
+    let response = null;
+    (async()=>{
+        const player : Player | null = get_player_by_id();
+        if(player){
+          const res = await find_game(player.player_id);
+          const data = await res.json();
+          console.log(data);
+          response = data;
+        };     
+      })();
+      return response;
 }
 
-export const add_player = async (nickname:string) => {
-    const req = new ApiRequest("POST",[],"text");
-    return req._exec_post({nickname:nickname}); // return ssid
+export const get_player_by_id = () : Player | null => {
+    const player_id = sessionStorage.getItem("player_id");
+    let response = null;
+    if(player_id)
+    {
+        (async()=>{
+            const req = new ApiRequest("POST","/get_player.php");
+            const res = await req._exec_post({"player_id":player_id});
+            const data = await res.json();
+            if(data.length == 0) response = null;
+            else{
+                response = data[0];
+                console.log(response);
+            } 
+        })()
+    }
+    return response;
 }
 
-export const delete_player = async(ssid: string) =>{
-    const req = new ApiRequest("DELETE",[],"json");
-    req._exec_post({ssid: ssid });
-    return true;
-}
+export const set_player_id_in_storage = (player_id : string) => sessionStorage.setItem("player_id", player_id);

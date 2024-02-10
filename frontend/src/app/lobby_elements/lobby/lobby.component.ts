@@ -8,5 +8,5 @@ import { Component } from '@angular/core';
   styleUrl: './lobby.component.css'
 })
 export class LobbyComponent {
-
+  // tutaj w ctor tez trzeba będzie sprawdzić czy jest aktywna gra czy nie
 }

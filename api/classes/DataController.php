@@ -9,7 +9,7 @@ class DataController{
         return $output;
     }
 
-    protected static function _cunt_data($data){
+    protected static function _count_data($data){
         return $data.size();
     }
 
