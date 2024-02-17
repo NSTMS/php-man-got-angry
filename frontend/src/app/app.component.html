@@ -1,11 +1,21 @@
-<!-- {{ title }}
+<h2>pomocy</h2>
+@if(game){
+    {{ game.game_id }}
+    {{ game.game_status }}
+    <br><hr>
+    @for(player_id of game.game_players_id; track game)
+    {
+        PLAYER_ID: {{player_id}}
+        <br>
+    }
 
-@if(in_progress())
-{
- <app-game-layout></app-game-layout>
+    <hr>
+<app-game-board [board]="game_board" [player_color]="player_color" [throw_dice_in_child]="throw_dice"></app-game-board>
+  
 }
 @else{
-    <app-add-player></app-add-player>
-} -->
-
-<router-outlet></router-outlet>
+    <label for="nickname">enter nickname: </label>
+    <input required type="text" name="nickname" id="nickname" (input)="nickname_change($event)">
+    <button (click)="add_player()">add player</button>
+    <!-- {{nickname()}} -->
+}

@@ -1,6 +1,6 @@
 import { Header } from "./classes/headers_helper";
 import { protocol,host,port,dir } from "../assets/connection";
-import type { ApiMethodType } from "./types/apiMethodType";
+import type { ApiMethodType } from "../types/apiMethodType";
 export class ApiRequest{
     method: ApiMethodType ;
     headers: Header;
@@ -50,5 +50,4 @@ class ApiRequestHelper{
         return fd;
     } 
 }
-
 

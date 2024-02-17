@@ -22,6 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'])){
     $game = NULL;
 
     foreach ($rooms as $roomKey => $room) {
+        if($room['game_status'] == "finished") continue;
         foreach ($room['game_players_id'] as $playerKey => $player) {
             if($player == $player_id){
                 $game = $room;
@@ -30,6 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'])){
         }
         if($game != NULL) break;
     }
+
 
     // if($game != NULL && $game['game_status'] == "finished")
     // {

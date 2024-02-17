@@ -1,0 +1,11 @@
+.board{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    max-width: 550px;
+    margin: 0 auto;
+}
+.tiles{
+    display: flex;
+}

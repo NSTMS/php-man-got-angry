@@ -9,6 +9,12 @@ $players_db = new DB("players");
 $rooms_db = new DB("rooms");
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET'){
+
+    $players_counter = $players_db->_count();
+    echo "players: $players_counter";
+    $rooms_counter = $rooms_db->_count();
+    echo "players: $rooms_counter";
+    
     $players_db->_delete_by(["player_status","=","in_lobby_not_ready"]);
     $rooms_db->_delete_by(["game_status","=","created"]);
 
