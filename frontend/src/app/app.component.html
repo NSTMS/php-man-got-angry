@@ -1,16 +1,32 @@
 <h2>pomocy</h2>
 @if(game){
-    {{ game.game_id }}
-    {{ game.game_status }}
+    ID: {{ game.game_id }}
+    STATUS: {{ game.game_status }}
     <br><hr>
-    @for(player_id of game.game_players_id; track game)
+    @for(player of players; track player.player_id)
     {
-        PLAYER_ID: {{player_id}}
+        @if(player.player_id === current_player?.player_id)
+        {
+            <b [style.color]="player.player_color">{{player.player_name}} </b>
+
+        }@else{
+            <span [style.color]="player.player_color">{{player.player_name}} </span>
+
+        }
+
+        <label for="player_status"> {{player.player_status}}</label>
+        @if(game.game_status == "created")
+        {
+            <input type="checkbox" name="player_status" #player_status (input)="change_status($event)">
+        }
+
         <br>
     }
 
     <hr>
-<app-game-board [board]="game_board" [player_color]="player_color" [throw_dice_in_child]="throw_dice"></app-game-board>
+
+
+<app-game-board [board]="game_board" [player_color]="player_color" [throw_dice_to_child]="throw_dice" [disabled]="disabled"></app-game-board>
   
 }
 @else{

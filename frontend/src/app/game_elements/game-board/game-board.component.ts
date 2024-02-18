@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Tile } from '../../../types/gameTypes';
 import { gameboard } from '../../../assets/gameboard';
 import { CommonModule } from '@angular/common';
@@ -14,10 +14,13 @@ import { Player } from '../../../types/apiResponsesTypes';
 export class GameBoardComponent {
   @Input() board: Tile[][] = gameboard;
   @Input() player_color : string = "";
-  @Input() throw_dice_in_child : () => void;
-
-  throw_dice_in_child_callback() {
-    this.throw_dice_in_child(); 
+  @Input() throw_dice_to_child!: Function; 
+  @Input() disabled: 'all' | 'none' = 'all';
+  
+  throw_dice_to_grandchild = () => {
+    console.log('triggered from GameBoard');
+    this.throw_dice_to_child();
   }
-  constructor(){}
+
 }
+  

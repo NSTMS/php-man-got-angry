@@ -62,7 +62,7 @@ export const gameboard: Tile[][] = [
       occupied: false,
     },
     {
-      background_color: blue_color,
+      background_color: accent_color,
       role: 'ending_point',
       type: 'tile',
       occupied: false,
@@ -212,7 +212,7 @@ export const gameboard: Tile[][] = [
   ],
   [
     {
-      background_color: red_color,
+      background_color: accent_color,
       role: 'ending_point',
       type: 'tile',
       occupied: false,
@@ -227,7 +227,7 @@ export const gameboard: Tile[][] = [
     { background_color: green_color, role: 'ending_base', type: 'tile', occupied: false },
     { background_color: green_color, role: 'ending_base', type: 'tile', occupied: false },
     {
-      background_color: green_color,
+      background_color: accent_color,
       role: 'ending_point',
       type: 'tile',
       occupied: false,
@@ -417,7 +417,7 @@ export const gameboard: Tile[][] = [
       occupied: false,
     },
     {
-      background_color: yellow_color,
+      background_color: accent_color,
       role: 'ending_point',
       type: 'tile',
       occupied: false,

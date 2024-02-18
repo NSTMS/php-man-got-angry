@@ -32,11 +32,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
     if(!is_null($potential_game_to_join))
     {
         array_push($potential_game_to_join['game_players_id'], $player_id);
-
-        $rooms_db->_update($potential_game_to_join["_id"],["game_players_id"=>$potential_game_to_join['game_players_id']]);
         $game_id = $potential_game_to_join["game_id"];
         $player_color = array_shift($potential_game_to_join['available_player_colors']);
         $current_game = $potential_game_to_join;
+ 
+
+        $rooms_db->_update($potential_game_to_join["_id"],
+        [
+            "game_players_id"=>$potential_game_to_join['game_players_id'],
+            "available_player_colors"=>$potential_game_to_join['available_player_colors'],
+        ]);
+    
     }
     else{
         $game_id = "rm-".$rooms_db->_generate_uid();

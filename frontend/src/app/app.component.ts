@@ -1,13 +1,14 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, ViewChild, ElementRef, signal, OnInit } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { check_player_existance, add_player_to_room} from '../helpers/player_helper';
-import type { Game, GameAndPlayerData } from '../types/apiResponsesTypes';
+import { check_player_existance, add_player_to_room, get_game_players, get_player_by_id, change_player_status} from '../helpers/player_helper';
+import type { Game, GameAndPlayerData, Player } from '../types/apiResponsesTypes';
 import { game_paths, gameboard } from '../assets/gameboard';
 import { GamePath, Tile } from '../types/gameTypes';
 import { GameBoardComponent } from './game_elements/game-board/game-board.component';
+import { check_game_start } from '../helpers/game_helpers';
 @Component({
     selector: 'app-root',
     standalone: true,
@@ -15,14 +16,17 @@ import { GameBoardComponent } from './game_elements/game-board/game-board.compon
     styleUrl: './app.component.css',
     imports: [CommonModule, RouterOutlet, HttpClientModule, GameBoardComponent]
 })
-export class AppComponent {
+export class AppComponent{
     game_board: Tile[][] = gameboard;
     nickname = signal("");
     game : Game | null = null;
     game_path : GamePath | null = null;
-    game_state: Tile[][] = [];
     player_color : string = "";
-    
+    disabled: 'all' | 'none' = 'all';
+    players : Player[] = [];
+    current_player : Player | null = null;
+
+
     constructor() {
       (async () => {
         const restored_game : GameAndPlayerData | null = await check_player_existance();
@@ -32,13 +36,15 @@ export class AppComponent {
           this.game = structuredClone(restored_game.game);
           this.player_color = sessionStorage.getItem("player_color") || "";
           this.game_path = game_paths[this.player_color];
+          this.disabled = this.game.game_status === 'in_progress' ? "all" : 'none'
+          this.players = [... await get_game_players(restored_game.game.game_players_id)];
+          this.current_player = await get_player_by_id();
         }
       })();
     }
 
     
-    nickname_change(event: Event)
-    {
+    nickname_change = (event: Event) =>{
       this.nickname.set((event.target as HTMLInputElement).value)
     }
   
@@ -50,21 +56,44 @@ export class AppComponent {
         this.game = {... data.game};
         this.game_path = game_paths[data.player_color];
         this.player_color = data.player_color;
+        this.players = [... await get_game_players(data.game.game_players_id)];
+        this.current_player = await get_player_by_id();
         sessionStorage.setItem("player_color", this.player_color);
+
       } 
     }
-    random_number_from_range(min: number, max: number) {
-      return Math.floor(Math.random() * (max - min + 1) + min)
+
+    change_status = async (event: Event) =>{
+      const checked: boolean = (event.target as HTMLInputElement).checked;
+      const status : string = checked ? "in_lobby_ready" : "in_lobby_not_ready"
+      await change_player_status(this.current_player!.player_id,status);
+      const can_start = await check_game_start(this.game!.game_id);
+      if(can_start){
+        console.log("game started")
+      }
     }
 
-    throw_dice = () =>{
-      const rand = this.random_number_from_range(1,6); // rzut kostką
-      // zagraj dźwięk
     
+    throw_dice = (event: Event) =>{
+      if(this.current_player?.player_status !== "in_game_moving") return;
+      const rand = Math.floor(Math.random() * 6 + 1) // rzut kostką
+      this.play_sound(rand.toString());
+
+      console.log(rand)    
+      if(this.disabled === 'all' && (rand === 6 || rand === 1))
+      {
+        console.log("możesz wyjść z bazy");
+        this.highlight_move();
+      }
     }
 
+    play_sound = (text: string) =>{
+      const lang = sessionStorage.getItem('lang');
+      // zagraj dźwięk
 
-    simulate_move = () =>{
+    }
+
+    highlight_move = () =>{
       // tutaj szara kropka gdzie możesz się ruszyć
       // ale tutaj jeszcze musi być obsługa tego że możesz wyjść pionkiem z bazy
     }

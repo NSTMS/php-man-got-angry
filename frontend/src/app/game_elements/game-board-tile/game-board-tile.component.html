@@ -1,5 +1,6 @@
-<div class="tile" [style.backgroundColor]="tile.background_color">
+<div class="tile" [style.backgroundColor]="tile.background_color"> 
     <!-- "blank" | "gameboard_tile" | "starting_base" | "ending_base" | "starting_point" | "ending_point" | "dice", -->
+
     @switch(tile.role)
     {
         @case('starting_base')
@@ -15,11 +16,11 @@
                 <div class="occupied"></div>
             }
             @else{
-                {{ index }}
+                <!-- {{ index }} -->
             }
         }
         @case('dice'){
-            <img src="../../../assets/dice-cube.png" alt="dice" (click)="throw_dice"/>
+            <img src="../../../assets/dice-cube.png" alt="dice" (click)="invokeParentFunction()"/>
         }
         @default{
             

@@ -2,7 +2,7 @@ export type Tile = {
     background_color : string, 
     role : "blank" | "gameboard_tile" | "starting_base" | "ending_base" | "starting_point" | "ending_point" | "dice",
     type: "blank" | "tile",
-    occupied : boolean
+    occupied : boolean,
 }
 
 export type GamePath = {

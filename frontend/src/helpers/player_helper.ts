@@ -38,4 +38,23 @@ export const get_player_by_id = async (): Promise<Player | null> => {
       }
     }
     return null;
-  };
+}
+
+export const get_game_players = async (game_player_ids : string[]): Promise<Player[]> =>{
+  const players: Player[] = [];
+  const req = new ApiRequest("POST", "/get_player.php");
+  for (let i = 0; i < game_player_ids.length; i++) {
+    const res = await req._exec_post({ "player_id": game_player_ids[i] });
+    const player = await res.json() as Player[];
+    players.push(player[0]);
+  }
+  return players;
+}
+
+export const change_player_status = async (player_id: string, status: string) =>{
+  const req = new ApiRequest("POST", "/update_player.php");
+  const res = await req._exec_post({ "player_id": player_id , property: 'player_status', value: status});
+  const player = await res.json() as Player;
+  console.log(player.player_status);
+
+}
