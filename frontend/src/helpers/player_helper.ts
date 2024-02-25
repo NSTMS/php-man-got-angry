@@ -7,7 +7,7 @@ export const check_player_existance = async (): Promise<GameAndPlayerData | null
     const player: Player | null = await get_player_by_id();
     if (player) {
       const res = await find_game(player.player_id);
-      sessionStorage.setItem("player_id", player.player_id);
+      localStorage.setItem("player_id", player.player_id);
       const data = await res.json();
       return { game: data, player_color: player.player_color, player_id: player.player_id };
     }
@@ -19,12 +19,12 @@ export const add_player_to_room = async (player_name: string) =>{
     const req = new ApiRequest("POST" ,"/add_player_to_room.php");
     const res = await req._exec_post({ "player_name":player_name })
     const data = await res.json() as GameAndPlayerData;
-    sessionStorage.setItem("player_id", data.player_id);
+    localStorage.setItem("player_id", data.player_id);
     return data;
 }
 
 export const get_player_by_id = async (): Promise<Player | null> => {
-    const player_id = sessionStorage.getItem("player_id");
+    const player_id = localStorage.getItem("player_id");
     if (player_id) {
       const req = new ApiRequest("POST", "/get_player.php");
       const res = await req._exec_post({ "player_id": player_id });
@@ -40,14 +40,10 @@ export const get_player_by_id = async (): Promise<Player | null> => {
     return null;
 }
 
-export const get_game_players = async (game_player_ids : string[]): Promise<Player[]> =>{
-  const players: Player[] = [];
-  const req = new ApiRequest("POST", "/get_player.php");
-  for (let i = 0; i < game_player_ids.length; i++) {
-    const res = await req._exec_post({ "player_id": game_player_ids[i] });
-    const player = await res.json() as Player[];
-    players.push(player[0]);
-  }
+export const get_game_players = async (game_player_id : string): Promise<Player[]> =>{
+  const req = new ApiRequest("POST", "/get_players_from_game_id.php");
+  const res = await req._exec_post({ "game_id": game_player_id });
+  const players : Player[]= await res.json() as Player[];
   return players;
 }
 

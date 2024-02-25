@@ -34,10 +34,10 @@ export class AppComponent{
           console.log(restored_game)
           // Restore the game or perform some action
           this.game = structuredClone(restored_game.game);
-          this.player_color = sessionStorage.getItem("player_color") || "";
+          this.player_color = localStorage.getItem("player_color") || "";
           this.game_path = game_paths[this.player_color];
           this.disabled = this.game.game_status === 'in_progress' ? "all" : 'none'
-          this.players = [... await get_game_players(restored_game.game.game_players_id)];
+          this.players = [... await get_game_players(restored_game.game.game_id)];
           this.current_player = await get_player_by_id();
         }
       })();
@@ -56,9 +56,9 @@ export class AppComponent{
         this.game = {... data.game};
         this.game_path = game_paths[data.player_color];
         this.player_color = data.player_color;
-        this.players = [... await get_game_players(data.game.game_players_id)];
+        this.players = [... await get_game_players(data.game.game_id)];
         this.current_player = await get_player_by_id();
-        sessionStorage.setItem("player_color", this.player_color);
+        localStorage.setItem("player_color", this.player_color);
 
       } 
     }
@@ -88,7 +88,7 @@ export class AppComponent{
     }
 
     play_sound = (text: string) =>{
-      const lang = sessionStorage.getItem('lang');
+      const lang = localStorage.getItem('lang');
       // zagraj dźwięk
 
     }

@@ -13,6 +13,31 @@ header("Access-Control-Allow-Headers: *");
 // jest zakończona? znajdź nowe lobby
 
 
+// tutaj nie wiem trzeba zacząć mechanizm sesji czy coś
+if($_SERVER['REQUEST_METHOD'] === 'GET')
+{
+    if(isset($_SESSION['player_id']))
+    {
+        $rooms_db = new DB("rooms");
+        $players_db = new DB("players");
+        
+        $player_id = $_SESSION['player_id'];
+        $rooms = $rooms_db->_get_all();
+        $game = NULL;
+
+        foreach ($rooms as $roomKey => $room) {
+            foreach ($room['game_players_id'] as $playerKey => $player) {
+                if($player == $player_id){
+                    $game = $room;
+                    break; 
+                }
+            }
+            if($game != NULL) break;
+        }
+    }
+    echo json_encode($game); // zwróci albo grę albo NULL
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'])){
     $rooms_db = new DB("rooms");
     $players_db = new DB("players");
