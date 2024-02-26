@@ -1,18 +1,18 @@
 import { ApiRequest } from "./api_helpers";
-import type { Game, Player, GameAndPlayerData} from "../types/apiResponsesTypes";
-import { find_game } from "./game_helpers";
+import type { Player, GameAndPlayerData} from "../types/apiResponsesTypes";
+import { set_session_id } from "./sessions_helper";
 
 
 export const add_player_to_room = async (player_name: string) =>{
     const req = new ApiRequest("POST" ,"/add_player_to_room.php");
     const res = await req._exec_post({ "player_name":player_name })
     const data = await res.json() as GameAndPlayerData;
-    localStorage.setItem("player_id", data.player_id);
+    set_session_id(data.session_id);
     return data;
 }
 
-export const get_player_by_id = async (): Promise<Player | null> => {
-    const player_id = localStorage.getItem("player_id");
+
+export const get_player_by_id = async (player_id : string | null): Promise<Player | null> => {
     if (player_id) {
       const req = new ApiRequest("POST", "/get_player.php");
       const res = await req._exec_post({ "player_id": player_id });
@@ -21,7 +21,6 @@ export const get_player_by_id = async (): Promise<Player | null> => {
         return null;
       } else {
         const player = data[0];
-        console.log(player);
         return player;
       }
     }
@@ -39,6 +38,5 @@ export const change_player_status = async (player_id: string, status: string) =>
   const req = new ApiRequest("POST", "/update_player.php");
   const res = await req._exec_post({ "player_id": player_id , property: 'player_status', value: status});
   const player = await res.json() as Player;
-  console.log(player.player_status);
-
+  return player;
 }

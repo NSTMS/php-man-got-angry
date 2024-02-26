@@ -1,15 +1,17 @@
-import { Component, ViewChild, ElementRef, signal, OnInit } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { add_player_to_room, get_game_players, get_player_by_id, change_player_status} from '../helpers/player_helper';
+import { add_player_to_room, get_game_players, change_player_status} from '../helpers/player_helper';
 import type { Game, GameAndPlayerData, Player } from '../types/apiResponsesTypes';
-import { game_paths, gameboard } from '../assets/gameboard';
+import { gameboard } from '../assets/gameboard';
 import { GamePath, Tile } from '../types/gameTypes';
 import { GameBoardComponent } from './game_elements/game-board/game-board.component';
-import { check_game_start, find_game } from '../helpers/game_helpers';
+import { check_game_start, find_game, set_ctx_props, start_refresh_data_interval } from '../helpers/game_helpers';
 import { FormsModule } from '@angular/forms';
+import { get_session_id } from '../helpers/sessions_helper';
+import { play_sound } from '../helpers/speech_helper';
 @Component({
     selector: 'app-root',
     standalone: true,
@@ -26,21 +28,15 @@ export class AppComponent{
     disabled: 'all' | 'none' = 'all';
     players : Player[] = [];
     current_player : Player | null = null;
-    player_status: boolean = false; // Default value
+    player_status: boolean = false; 
 
     constructor() {
       (async () => {
-        const restored_game : GameAndPlayerData | null = await find_game();
+        const session_id = get_session_id();
+        const restored_game : GameAndPlayerData | null = await find_game(session_id);
         if (restored_game) {
-          console.log(restored_game)
-          // Restore the game or perform some action
-          this.game = structuredClone(restored_game.game);
-          this.player_color = restored_game.player_color
-          this.game_path = game_paths[this.player_color];
-          this.disabled = this.game.game_status === 'in_progress' ? "all" : 'none'
-          this.players = [... await get_game_players(this.game.game_id)];
-          this.current_player = await get_player_by_id();
-          this.player_status = this.current_player?.player_status === "in_lobby_ready";
+          set_ctx_props(this, restored_game);
+          await start_refresh_data_interval(this);
         }
       })();
     }
@@ -54,11 +50,9 @@ export class AppComponent{
       if(this.nickname().trim() != "")
       {
         const data = await add_player_to_room(this.nickname());
-        this.game = {... data.game};
-        this.game_path = game_paths[data.player_color];
-        this.player_color = data.player_color;
-        this.players = [... await get_game_players(data.game.game_id)];
-        this.current_player = await get_player_by_id();
+        set_ctx_props(this, data);
+        await start_refresh_data_interval(this);
+
       } 
     }
 
@@ -68,7 +62,6 @@ export class AppComponent{
       const status : string = checked ? "in_lobby_ready" : "in_lobby_not_ready";
       await change_player_status(this.current_player!.player_id,status);
       this.players = [... await get_game_players(this.game!.game_id)];
-
       const can_start = await check_game_start(this.game!.game_id);
 
       if(can_start){
@@ -78,9 +71,10 @@ export class AppComponent{
 
     
     throw_dice = (event: Event) =>{
-      if(this.current_player?.player_status !== "in_game_moving") return;
+      if(this.current_player!.player_status !== "in_game_moving") return;
+      console.log(this.current_player)
       const rand = Math.floor(Math.random() * 6 + 1) // rzut kostką
-      this.play_sound(rand.toString());
+      play_sound(rand.toString());
 
       console.log(rand)    
       if(this.disabled === 'all' && (rand === 6 || rand === 1))
@@ -90,11 +84,6 @@ export class AppComponent{
       }
     }
 
-    play_sound = (text: string) =>{
-      const lang = localStorage.getItem('lang');
-      // zagraj dźwięk
-
-    }
 
     highlight_move = () =>{
       // tutaj szara kropka gdzie możesz się ruszyć

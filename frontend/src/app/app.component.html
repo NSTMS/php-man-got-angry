@@ -5,10 +5,9 @@
     <br><hr>
     @for(player of players; track player.player_id)
     {
-
         @if(player.player_id === current_player?.player_id)
         {
-            <b [style.color]="player.player_color">{{player.player_name}} </b>
+            <b [style.color]="player.player_color">[{{player.player_name}}]</b>
             <label for="player_status"> {{player.player_status}}</label>
             @if(game.game_status == "created")
             {
@@ -19,10 +18,8 @@
             <span [style.color]="player.player_color">{{player.player_name}} </span>
             <span> {{player.player_status}}</span>
         }
-
         <br>
     }
-
     <hr>
 
 

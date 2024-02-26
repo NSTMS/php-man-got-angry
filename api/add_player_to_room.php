@@ -65,12 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
         "player_game_id" =>$game_id,
         "player_color" => $player_color
     ]);
+
     session_start();
     $_SESSION['player_id'] = $player_id;
     $_SESSION['player_color'] = $player_color;
-    
+    $_SESSION['game'] = $current_game;
 
-
-    $response = ["player_id"=>$player_id, "game"=> $current_game ,"player_color"=> $player_color];
+    $response = ["player_id"=>$player_id, "game"=> $current_game ,"player_color"=> $player_color, "session_id"=>session_id()];
     echo json_encode($response);
 }

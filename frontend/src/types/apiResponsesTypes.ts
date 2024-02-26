@@ -20,4 +20,12 @@ export type GameAndPlayerData = {
     player_id: string ,
     player_color: string 
     game: Game,
+    session_id: string
+}
+
+export type GameId_PlayerId_PlayerColor = {
+    game_id: string,
+    session_id: string,
+    player_id: string ,
+    player_color: string,
 }
