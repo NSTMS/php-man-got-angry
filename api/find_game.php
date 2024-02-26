@@ -12,18 +12,25 @@ header("Access-Control-Allow-Headers: *");
 // czy gra jest zakończona? -> czy jest created? / czy jest in_progress? -> przywróć grę
 // jest zakończona? znajdź nowe lobby
 
+//Bajo jajo bajo jajo ()()()()()
+
 
 // tutaj nie wiem trzeba zacząć mechanizm sesji czy coś
 if($_SERVER['REQUEST_METHOD'] === 'GET')
 {
-    if(isset($_SESSION['player_id']))
+    $response = ["player_id"=>NULL, "game"=> NULL ,"player_color"=> NULL];   
+    session_start();
+
+    if(isset($_SESSION['player_id']) && isset($_SESSION['player_color']))
     {
+
         $rooms_db = new DB("rooms");
         $players_db = new DB("players");
+        $game = NULL;
         
         $player_id = $_SESSION['player_id'];
+        $player_colro = $_SESSION['player_color'];
         $rooms = $rooms_db->_get_all();
-        $game = NULL;
 
         foreach ($rooms as $roomKey => $room) {
             foreach ($room['game_players_id'] as $playerKey => $player) {
@@ -34,8 +41,10 @@ if($_SERVER['REQUEST_METHOD'] === 'GET')
             }
             if($game != NULL) break;
         }
+        $response = ["player_id"=>$player_id, "game"=> $current_game ,"player_color"=> $player_color];
+        
     }
-    echo json_encode($game); // zwróci albo grę albo NULL
+    echo json_encode($response); // zwróci albo grę albo NULL
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_id'])){

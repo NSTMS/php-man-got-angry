@@ -5,19 +5,19 @@
     <br><hr>
     @for(player of players; track player.player_id)
     {
+
         @if(player.player_id === current_player?.player_id)
         {
             <b [style.color]="player.player_color">{{player.player_name}} </b>
+            <label for="player_status"> {{player.player_status}}</label>
+            @if(game.game_status == "created")
+            {
+                <input type="checkbox" name="player_status" [(ngModel)]="player_status" (input)="change_status($event)">
+            }
 
         }@else{
             <span [style.color]="player.player_color">{{player.player_name}} </span>
-
-        }
-
-        <label for="player_status"> {{player.player_status}}</label>
-        @if(game.game_status == "created")
-        {
-            <input type="checkbox" name="player_status" #player_status (input)="change_status($event)">
+            <span> {{player.player_status}}</span>
         }
 
         <br>

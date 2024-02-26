@@ -3,18 +3,6 @@ import type { Game, Player, GameAndPlayerData} from "../types/apiResponsesTypes"
 import { find_game } from "./game_helpers";
 
 
-export const check_player_existance = async (): Promise<GameAndPlayerData | null> => {
-    const player: Player | null = await get_player_by_id();
-    if (player) {
-      const res = await find_game(player.player_id);
-      localStorage.setItem("player_id", player.player_id);
-      const data = await res.json();
-      return { game: data, player_color: player.player_color, player_id: player.player_id };
-    }
-    return null;
-  };
-
-
 export const add_player_to_room = async (player_name: string) =>{
     const req = new ApiRequest("POST" ,"/add_player_to_room.php");
     const res = await req._exec_post({ "player_name":player_name })

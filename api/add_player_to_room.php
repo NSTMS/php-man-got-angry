@@ -12,7 +12,7 @@ $players_db = new DB("players");
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
-    session_start();
+
     $player_name = $_POST['player_name'];
     $rooms = $rooms_db->_get_by(["game_status","=","created"]);
     $game = NULL;
@@ -27,7 +27,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
     }
     
     $player_id = "pl-".$players_db->_generate_uid();
-    $_SESSION['player_id'] = $player_id;
     $game_id = NULL;
     $current_game = NULL;
     if(!is_null($potential_game_to_join))
@@ -66,7 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
         "player_game_id" =>$game_id,
         "player_color" => $player_color
     ]);
+    session_start();
+    $_SESSION['player_id'] = $player_id;
     $_SESSION['player_color'] = $player_color;
+    
+
 
     $response = ["player_id"=>$player_id, "game"=> $current_game ,"player_color"=> $player_color];
     echo json_encode($response);
