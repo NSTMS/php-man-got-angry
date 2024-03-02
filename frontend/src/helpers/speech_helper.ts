@@ -1,11 +1,13 @@
 export const play_sound = (text: string) =>{
-    const lang = localStorage.getItem('lang') ;
     const synth = window.speechSynthesis;
     const voices = synth.getVoices();
-	console.log(voices);
     const utterThis = new SpeechSynthesisUtterance(text);
-    // lang jest nullem dlatego gada po polsku
-    utterThis.lang = lang!;
 
+    const lang = localStorage.getItem('lang') ;
+    if(!lang) localStorage.setItem('lang', 'pl-PL');
+
+    utterThis.lang = lang!;
+    
+    // lang jest nullem dlatego gada po polsku
     synth.speak(utterThis);
 }

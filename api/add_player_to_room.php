@@ -53,7 +53,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
             "game_status" => "created",
             "game_state" => "", // to jeszcze nie wiem dokońca
             "time_left_for_move" => 60,
-            "available_player_colors" => ["blue","yellow","green"] // "blue","yellow","green" bo "red" już przypisane do pierwszego gracza
+            "available_player_colors" => ["blue","yellow","green"], // "blue","yellow","green" bo "red" już przypisane do pierwszego gracza,
+            "players_pawns" => [
+                "red" => [
+                    ["pawn_id" => 1, "pos" => 12, "color" => "red", "status" => "in_home"],
+                    ["pawn_id" => 2, "pos" => 13, "color" => "red", "status" => "in_home"],
+                    ["pawn_id" => 3, "pos" => 23, "color" => "red", "status" => "in_home"],
+                    ["pawn_id" => 4, "pos" => 24, "color" => "red", "status" => "in_home"],
+                ],
+                "blue" => [
+                    ["pawn_id" => 1, "pos" => 19, "color" => "blue", "status" => "in_home"],
+                    ["pawn_id" => 2, "pos" => 20, "color" => "blue", "status" => "in_home"],
+                    ["pawn_id" => 3, "pos" => 30, "color" => "blue", "status" => "in_home"],
+                    ["pawn_id" => 4, "pos" => 31, "color" => "blue", "status" => "in_home"],
+                ],
+                "yellow" => [
+                    ["pawn_id" => 1, "pos" => 89, "color" => "yellow", "status" => "in_home"],
+                    ["pawn_id" => 2, "pos" => 90, "color" => "yellow", "status" => "in_home"],
+                    ["pawn_id" => 3, "pos" => 100, "color" => "yellow", "status" => "in_home"],
+                    ["pawn_id" => 4, "pos" => 101, "color" => "yellow", "status" => "in_home"],
+                ],
+                "green" => [
+                    ["pawn_id" => 1, "pos" => 96, "color" => "green", "status" => "in_home"],
+                    ["pawn_id" => 2, "pos" => 97, "color" => "green", "status" => "in_home"],
+                    ["pawn_id" => 3, "pos" => 107, "color" => "green", "status" => "in_home"],
+                    ["pawn_id" => 4, "pos" => 108, "color" => "green", "status" => "in_home"],
+                ],
+            ]
         ];
         $rooms_db->_insert($current_game);
     }

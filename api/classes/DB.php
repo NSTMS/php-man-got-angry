@@ -33,7 +33,9 @@ class DB extends DataController{
     public function _update($doc_id, $new_data){
         $this->db->updateById($doc_id, $new_data);
     }
-
+    public function _update_data($new_data){
+        $this->db->update($new_data);
+    }
     public function _insert($data){
         return $this->db->insert($data);
     }

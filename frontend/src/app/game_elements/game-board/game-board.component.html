@@ -2,7 +2,7 @@
     @for(tiles of board; track tiles;let  i = $index){
         <div class="tiles">
             @for(tile of tiles; track tile; let j = $index ){
-                <app-game-board-tile [tile]="tile" [i]="i" [j]="j" [player_color]="player_color" [throw_dice_to_grandchild]="throw_dice_to_grandchild"></app-game-board-tile>
+                <app-game-board-tile [tile]="tile" [i]="i" [j]="j" [throw_dice_to_grandchild]="throw_dice_to_grandchild" [pawns]="pawns" [move_pawn]="move" [player_color]="player_color"></app-game-board-tile>
             }
         </div>
     }

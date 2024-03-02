@@ -1,3 +1,5 @@
+import { Pawn } from "./gameTypes"
+
 export type Player = {
     player_id : string,
     player_name : string,
@@ -7,19 +9,22 @@ export type Player = {
     player_figures_position: number[], // tablica z indexami pól na których stoją pionki
 }
 
-export type Game = {
+export type GameResponse = {
     game_id : string,
     game_players_id : string[], 
     game_status : "created" | "in_progress" | "finished"
     game_state : string // długi jakiś taki
     time_left_for_move : number, //czas na ruch nastepnego gracza
-    available_player_colors: string[]
+    available_player_colors: string[],
+    players_pawns: Record<string, Pawn[]>, // uzupełnij to w php !!!!
 }
+
+
 
 export type GameAndPlayerData = {
     player_id: string ,
     player_color: string 
-    game: Game,
+    game: GameResponse,
     session_id: string
 }
 

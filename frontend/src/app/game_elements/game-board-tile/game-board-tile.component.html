@@ -1,23 +1,18 @@
 <div class="tile" [style.backgroundColor]="tile.background_color"> 
     <!-- "blank" | "gameboard_tile" | "starting_base" | "ending_base" | "starting_point" | "ending_point" | "dice", -->
 
+    @if(pawn && pawn.color == player_color)
+    {
+        <div (click)="move()">pawn</div>
+    }
     @switch(tile.role)
     {
         @case('starting_base')
         {
-            @if(tile.occupied)
-            {
-                <div class="occupied"></div>
-            }
+            {{ index }}
         }
-        @case('gameboard_tile'){
-            @if(tile.occupied)
-            {
-                <div class="occupied"></div>
-            }
-            @else{
-                <!-- {{ index }} -->
-            }
+        @case('ending_base'){
+            
         }
         @case('dice'){
             <img src="../../../assets/dice-cube.png" alt="dice" (click)="invokeParentFunction()"/>
