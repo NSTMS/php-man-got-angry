@@ -1,10 +1,11 @@
 <div class="tile" [style.backgroundColor]="tile.background_color"> 
     <!-- "blank" | "gameboard_tile" | "starting_base" | "ending_base" | "starting_point" | "ending_point" | "dice", -->
 
-    @if(pawn && pawn.color == player_color)
+    @if(pawn && pawn.color == game.current_player?.player_color)
     {
         <div (click)="move()">pawn</div>
     }
+
     @switch(tile.role)
     {
         @case('starting_base')

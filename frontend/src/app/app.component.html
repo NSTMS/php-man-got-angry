@@ -1,5 +1,4 @@
 <h2>pomocy</h2>
-
 @if(game){
     ID: {{ game.game_id }}
     STATUS: {{ game.game_status }}
@@ -24,7 +23,7 @@
     <hr>
 
 
-<app-game-board [board]="game_board" [player_color]="game.player_color" [throw_dice_to_child]="throw_dice" [disabled]="game.disabled" [pawns]="game.players_pawns" [move_pawn]="move_pawn"></app-game-board>
+<app-game-board  [board]="game_board" [game]='game' [players_pawns]="players_pawns" [throw_dice_to_child]="throw_dice" [move_pawn]="move_pawn"></app-game-board>
   
 }
 @else{

@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { Pawn, Tile } from '../../../types/gameTypes';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Game, Pawn, Tile } from '../../../types/gameTypes';
 import { gameboard } from '../../../assets/gameboard';
 import { CommonModule } from '@angular/common';
 import { GameBoardTileComponent } from '../game-board-tile/game-board-tile.component';
@@ -12,11 +12,10 @@ import { GameBoardTileComponent } from '../game-board-tile/game-board-tile.compo
 })
 export class GameBoardComponent{
   @Input() board: Tile[][] = gameboard;
-  @Input() player_color : string = "";
+  @Input() game : Game = {} as Game;
   @Input() move_pawn!: (pawn:Pawn) => void;
+  @Input() players_pawns: Record<string, Pawn[]> = {};
   @Input() throw_dice_to_child!: Function; 
-  @Input() disabled: 'all' | 'none' = 'all';
-  @Input() pawns: Record<string, Pawn[]> = {};
   
   throw_dice_to_grandchild = () => {
     return this.throw_dice_to_child();

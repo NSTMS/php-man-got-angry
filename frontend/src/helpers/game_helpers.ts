@@ -1,4 +1,3 @@
-import { ChangeDetectorRef } from "@angular/core";
 import { AppComponent } from "../app/app.component";
 import { game_paths } from "../assets/gameboard";
 import { GameAndPlayerData } from "../types/apiResponsesTypes";
@@ -23,12 +22,11 @@ export const check_game_start = async (game_id : string) =>{
     await req._exec_post({ "game_id":game_id });
     return true;
 }
-export const update_game = async (ctx: AppComponent,new_pawns: Record<string, Pawn[]>) =>{
+export const update_game = async (ctx: AppComponent) =>{
     const req = new ApiRequest("POST","/update_game.php");
-    const res = await req._exec_post({ "game_id": ctx.game!.game_id, "players_pawns": JSON.stringify(new_pawns)});
+    const res = await req._exec_post({ "game_id": ctx.game!.game_id, "players_pawns": JSON.stringify(ctx.game!.players_pawns)});
     const data = await res.json() as Record<string, Pawn[]>;
-    console.log(data["red"]);
-    ctx.game = { ...ctx.game, players_pawns: data } as Game; // Create a new object for ctx.game
+    return data;
 }
 
 export const start_refresh_data_interval = async (ctx: AppComponent) => {
@@ -38,7 +36,7 @@ export const start_refresh_data_interval = async (ctx: AppComponent) => {
         (async()=>{
                 const data = await find_game(session_id);
                 if(!data) stop_game(interval); 
-                set_ctx_props(ctx, data!, ctx.cdr);
+                set_ctx_props(ctx, data!);
         })()
 
     }, 1000);
@@ -51,7 +49,7 @@ const stop_game = (interval: any) => {
     window.location.reload();
 }
 
-export const set_ctx_props = async (ctx: AppComponent, data: GameAndPlayerData, cdr: ChangeDetectorRef) => {
+export const set_ctx_props = async (ctx: AppComponent, data: GameAndPlayerData) => {
     const player = await get_player_by_id(data.player_id);
     const players = await get_game_players(data.game.game_id);
     const game = structuredClone(ctx.game!)
@@ -68,8 +66,8 @@ export const set_ctx_props = async (ctx: AppComponent, data: GameAndPlayerData, 
         time_left_for_move: data.game.time_left_for_move,
         players_pawns: data.game.players_pawns,
     };
+    ctx.players_pawns = data.game.players_pawns;
     restore_pawns_positions(ctx.game!.players_pawns);
-    cdr.detectChanges(); // Manually trigger change detection
 }
 
 let players_pawns : Record<string, Pawn[]> = {

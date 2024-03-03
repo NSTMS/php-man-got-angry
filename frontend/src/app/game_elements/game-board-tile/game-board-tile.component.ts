@@ -1,5 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import type { Pawn, Tile } from '../../../types/gameTypes';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import type { Game, Pawn, Tile } from '../../../types/gameTypes';
 import { Player } from '../../../types/apiResponsesTypes';
 import { move_pawn_by_steps } from '../../../helpers/move_helper';
 @Component({
@@ -9,34 +9,43 @@ import { move_pawn_by_steps } from '../../../helpers/move_helper';
   templateUrl: './game-board-tile.component.html',
   styleUrl: './game-board-tile.component.css'
 })
-export class GameBoardTileComponent implements OnInit{
-  @Input() tile: Tile = {} as Tile;
+export class GameBoardTileComponent implements OnInit, OnChanges{
   @Input() i: number = 0;
   @Input() j: number = 0;
   index : number = 0;
+  @Input() tile: Tile = {} as Tile;
+  @Input() game : Game = {} as Game;
+  @Input() players_pawns: Record<string, Pawn[]> = {};
+
   @Input() move_pawn!: (pawn:Pawn) => void;
   @Input() throw_dice_to_grandchild!: Function // Make it non-null with assertion
-  @Input() pawns:  Record<string, Pawn[]> = {} as Record<string, Pawn[]>;
-  @Input() player_color: string = "";
 
   pawn : Pawn | null = null;
   rand: number = 0;
-  player_pawns: Pawn[] = [];
+  pawns: Pawn[] = [];
 
   invokeParentFunction = () => {
     console.log('clicked from GameBoardTile');
     this.throw_dice_to_grandchild();
     
   }
-
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes['players_pawns']) this.assign_pawn();
+  }
+  
   ngOnInit(): void {
     this.index = this.i*11 + this.j;
-    this.player_pawns = Object.values(this.pawns).flat();
-    console.log('here i am')
-    if(this.player_pawns.map(pawn => pawn.pos).includes(this.index))
+    this.assign_pawn();
+  }
+
+
+  assign_pawn = () => {
+    this.pawns = Object.values(this.players_pawns).flat();
+    this.pawn = null;
+    if(this.pawns.map(p => p.pos).includes(this.index))
     {
-      const ind = this.player_pawns.map(p => p.pos).indexOf(this.index);
-      this.pawn = this.player_pawns[ind];
+      const ind = this.pawns.map(p => p.pos).indexOf(this.index);
+      this.pawn = this.pawns[ind];
     }
   }
   

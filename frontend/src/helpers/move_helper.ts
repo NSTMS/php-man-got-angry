@@ -1,4 +1,5 @@
 
+import { AppComponent } from "../app/app.component";
 import { game_paths } from "../assets/gameboard";
 import { Pawn } from "../types/gameTypes";
 
@@ -18,33 +19,37 @@ export const move_pawn_by_position = (players_pawns: Record<string, Pawn[]> ,paw
     return update_pawn_position(players_pawns, pawn);
 }
 
-export const move_pawn_by_steps = (players_pawns: Record<string, Pawn[]> ,pawn: Pawn, steps:number) => {
-    const path = get_pawn_game_path(pawn.color).game_path;
-    const next_position = get_next_position(pawn, path, steps);
-    check_collision(players_pawns,path[next_position], pawn.color);
-    pawn.pos = path[next_position];
-    return update_pawn_position(players_pawns, pawn);
+export const move_pawn_by_steps = (ctx:AppComponent ,pawn: Pawn, steps:number) => {
+    let players_pawns = ctx.game!.players_pawns;
+    const path = get_pawn_game_path(pawn.color);
+    let next_position = get_next_position(pawn, path.game_path, steps);
+    let updatedPawn;
+    if(steps == 0){
+        next_position = path.starting_point;
+        pawn.status = "in_game"
+        updatedPawn = { ...pawn, pos: next_position} as Pawn;
+    } else {
+        updatedPawn = { ...pawn, pos: path.game_path[next_position]} as Pawn;
+    }
+    const pawns = update_pawn_position(players_pawns, updatedPawn);
+    console.log(pawns);
+    console.log(updatedPawn)
+    
+    ctx.game!.players_pawns = {... pawns};
+    ctx.players_pawns = {... pawns};
 }
-
-export const update_pawn_position = (players_pawns: Record<string, Pawn[]> ,pawn: Pawn) =>{
+export const update_pawn_position = (players_pawns: Record<string, Pawn[]> ,pawn: Pawn) : Record<string, Pawn[]> =>{
     const playerPawns = players_pawns[pawn.color];
     const updatedPawns = playerPawns.map(p => {
         if (p.pawn_id === pawn.pawn_id) {
-            return { ...p, pos: pawn.pos };
+            return { ...p, pos: pawn.pos, status: pawn.status};
         }
         return p;
     });
-    players_pawns[pawn.color] = structuredClone(updatedPawns);
+    players_pawns[pawn.color] = updatedPawns;
     return players_pawns;
 }
 
-export const move_pawn_to_starting_point = (players_pawns: Record<string, Pawn[]> ,pawn: Pawn) =>{
-    const starting_point = get_pawn_game_path(pawn.color).starting_point;
-    check_collision(players_pawns,starting_point, pawn.color);
-    pawn.status = "in_game";
-    pawn.pos = starting_point;
-    return update_pawn_position(players_pawns, pawn);
-}
 
 export const move_pawn_to_base = (players_pawns: Record<string, Pawn[]> , pawn: Pawn) =>{
     const base = get_pawn_game_path(pawn.color).base_points;
