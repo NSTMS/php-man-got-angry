@@ -1,25 +1,14 @@
 <div class="tile" [style.backgroundColor]="tile.background_color"> 
     <!-- "blank" | "gameboard_tile" | "starting_base" | "ending_base" | "starting_point" | "ending_point" | "dice", -->
 
-    @if(pawn && pawn.color == game.current_player?.player_color)
-    {
-        <div (click)="move()">pawn</div>
+    @for(p of pawns_on_tile; track p.pawn_id){
+        <div (click)="move(p)" [style.backgroundColor]="p.color" class="pawn">{{index}}</div>
     }
 
     @switch(tile.role)
     {
-        @case('starting_base')
-        {
-            {{ index }}
-        }
-        @case('ending_base'){
-            
-        }
         @case('dice'){
             <img src="../../../assets/dice-cube.png" alt="dice" (click)="invokeParentFunction()"/>
-        }
-        @default{
-            
         }
     }
 

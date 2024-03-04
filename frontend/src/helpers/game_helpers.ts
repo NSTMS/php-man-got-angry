@@ -22,12 +22,6 @@ export const check_game_start = async (game_id : string) =>{
     await req._exec_post({ "game_id":game_id });
     return true;
 }
-export const update_game = async (ctx: AppComponent) =>{
-    const req = new ApiRequest("POST","/update_game.php");
-    const res = await req._exec_post({ "game_id": ctx.game!.game_id, "players_pawns": JSON.stringify(ctx.game!.players_pawns)});
-    const data = await res.json() as Record<string, Pawn[]>;
-    return data;
-}
 
 export const start_refresh_data_interval = async (ctx: AppComponent) => {
     const interval = setInterval(() => {
@@ -39,7 +33,7 @@ export const start_refresh_data_interval = async (ctx: AppComponent) => {
                 set_ctx_props(ctx, data!);
         })()
 
-    }, 1000);
+    }, 2000);
 }
 
 const stop_game = (interval: any) => {
@@ -61,12 +55,13 @@ export const set_ctx_props = async (ctx: AppComponent, data: GameAndPlayerData) 
         players: players,
         disabled: data.game.game_status === 'in_progress' ? "all" : 'none',
         game_path: game_paths[data.player_color].game_path,
-        game_status: data.game.game_status,
+        game_status: data.game.game_status, 
         player_status: player?.player_status === "in_lobby_ready",
         time_left_for_move: data.game.time_left_for_move,
         players_pawns: data.game.players_pawns,
     };
-    ctx.players_pawns = data.game.players_pawns;
+    ctx.players_pawns = structuredClone(data.game.players_pawns);
+    
     restore_pawns_positions(ctx.game!.players_pawns);
 }
 

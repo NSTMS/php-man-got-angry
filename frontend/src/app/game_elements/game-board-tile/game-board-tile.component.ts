@@ -20,7 +20,7 @@ export class GameBoardTileComponent implements OnInit, OnChanges{
   @Input() move_pawn!: (pawn:Pawn) => void;
   @Input() throw_dice_to_grandchild!: Function // Make it non-null with assertion
 
-  pawn : Pawn | null = null;
+  pawns_on_tile : Pawn[] = [];
   rand: number = 0;
   pawns: Pawn[] = [];
 
@@ -41,17 +41,18 @@ export class GameBoardTileComponent implements OnInit, OnChanges{
 
   assign_pawn = () => {
     this.pawns = Object.values(this.players_pawns).flat();
-    this.pawn = null;
-    if(this.pawns.map(p => p.pos).includes(this.index))
-    {
-      const ind = this.pawns.map(p => p.pos).indexOf(this.index);
-      this.pawn = this.pawns[ind];
-    }
+    this.pawns_on_tile = [];
+
+    this.pawns.filter(p => p.pos == this.index).forEach(p =>{
+      const ind = this.pawns.indexOf(p);
+      this.pawns_on_tile.push(this.pawns[ind]);
+    })
+
   }
   
-  move = () => {
-    console.log(this.pawn!)
-    this.move_pawn(this.pawn!);
+  move = (pawn: Pawn) => {
+    console.log(this.pawns_on_tile!)
+    this.move_pawn(pawn);
   }
 
 

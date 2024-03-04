@@ -7,7 +7,7 @@ import type { GameAndPlayerData } from '../types/apiResponsesTypes';
 import { gameboard } from '../assets/gameboard';
 import { Game, Pawn, Tile } from '../types/gameTypes';
 import { GameBoardComponent } from './game_elements/game-board/game-board.component';
-import { check_game_start, find_game, set_ctx_props, start_refresh_data_interval, update_game } from '../helpers/game_helpers';
+import { check_game_start, find_game, set_ctx_props, start_refresh_data_interval } from '../helpers/game_helpers';
 import { FormsModule } from '@angular/forms';
 import { get_session_id } from '../helpers/sessions_helper';
 import { play_sound } from '../helpers/speech_helper';
@@ -84,20 +84,18 @@ export class AppComponent implements OnInit{
     this.dice_value = Math.floor(Math.random() * 6 + 1);
     play_sound(this.dice_value.toString());
     this.highlight_move();
-    console.log(this.game!.players_pawns)
+    console.log(this.dice_value)
 
   }
 
   move_pawn = (pawn:Pawn) =>{
-    this.dice_value = 6;
     if(this.game!.current_player!.player_status !== "in_game_moving") return;
     if(!this.dice_value) return;
     if((this.dice_value === 6 || this.dice_value === 1) && pawn.status === "in_home") this.dice_value = 0;
     else if((this.dice_value !== 6 && this.dice_value !== 1) && pawn.status === "in_home") return;
     (async ()=>{
       console.log(this.dice_value)
-      move_pawn_by_steps(this, pawn, this.dice_value!);
-      this.players_pawns = {...await update_game(this)};
+      this.players_pawns = await move_pawn_by_steps(this, pawn, this.dice_value!);
     })()
    
     this.dice_value = null;
