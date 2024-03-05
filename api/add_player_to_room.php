@@ -63,8 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
                 ],
                 "blue" => [
                     ["pawn_id" => 1, "pos" => 19, "color" => "blue", "status" => "in_home"],
-                    ["pawn_id" => 2, "pos" => 20, "color" => "blue", "status" => "in_home"],
-                    ["pawn_id" => 3, "pos" => 30, "color" => "blue", "status" => "in_home"],
+                    ["pawn_id" => 2, "pos" => 54, "color" => "blue", "status" => "in_home"],
+                    ["pawn_id" => 3, "pos" => 55, "color" => "blue", "status" => "in_home"],
                     ["pawn_id" => 4, "pos" => 31, "color" => "blue", "status" => "in_home"],
                 ],
                 "yellow" => [

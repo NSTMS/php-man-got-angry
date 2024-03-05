@@ -16,11 +16,13 @@ export class GameBoardComponent{
   @Input() move_pawn!: (pawn:Pawn) => void;
   @Input() players_pawns: Record<string, Pawn[]> = {};
   @Input() throw_dice_to_child!: Function; 
-  
+  @Input() highlight_move!: (pawn:Pawn) => void;
+
   throw_dice_to_grandchild = () => {
     return this.throw_dice_to_child();
   }
-
+  show_possible_move = (pawn:Pawn) => this.highlight_move(pawn);
+  
   move = (pawn:Pawn) => this.move_pawn(pawn)
 
 }

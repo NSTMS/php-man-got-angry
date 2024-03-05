@@ -8,7 +8,7 @@ const blue_color: string = 'blue';
 const yellow_color: string = 'yellow';
 const green_color: string = 'green';
 
-const game_path = [44,45,46,47,48,37,26,15,4,5,6,17,28,39,50,51,52,53,54,65,76,75,74,73,72,83,94,105,116,114,103,92,81,70,69,68,67,66,55];
+const game_path = [44,45,46,47,48,37,26,15,4,5,6,17,28,39,50,51,52,53,54,65,76,75,74,73,72,83,94,105,116,115,114,103,92,81,70,69,68,67,66,55];
 
 const modifyGamePath = (start: number): number[] => {
   const startIndex = game_path.indexOf(start);
@@ -21,30 +21,26 @@ const modifyGamePath = (start: number): number[] => {
 export const game_paths: Record<string,GamePath> = {
   "red":{
     base_points: [12,13,23,24],
-    game_path:modifyGamePath(44),
+    game_path:[...modifyGamePath(44),56,57,58,59],
     starting_point:44,
-    ending_base_entry:55,
     ending_base_path:[56,57,58,59],
   },
   "blue":{
     base_points: [19,20,30,31],
-    game_path:modifyGamePath(6),
+    game_path: [...modifyGamePath(6) ,16,27,38,49],
     starting_point:6,
-    ending_base_entry:5,
     ending_base_path:[16,27,38,49],
   },
   "green":{
     base_points: [89,90,100,101],
-    game_path:modifyGamePath(76),
+    game_path:[...modifyGamePath(76),61,62,63,64],
     starting_point:76,
-    ending_base_entry:65,
     ending_base_path:[61,62,63,64],
   },
   "yellow":{
     base_points: [96,97,107,108],
-    game_path:modifyGamePath(114),
+    game_path:[...modifyGamePath(114),104,93,82,71],
     starting_point:114,
-    ending_base_entry:115,
     ending_base_path:[104,93,82,71],
   }
 }

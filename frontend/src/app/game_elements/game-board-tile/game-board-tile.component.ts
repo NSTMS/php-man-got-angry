@@ -18,14 +18,14 @@ export class GameBoardTileComponent implements OnInit, OnChanges{
   @Input() players_pawns: Record<string, Pawn[]> = {};
 
   @Input() move_pawn!: (pawn:Pawn) => void;
-  @Input() throw_dice_to_grandchild!: Function // Make it non-null with assertion
+  @Input() highlight_move!: (pawn:Pawn) => void;
+  @Input() throw_dice_to_grandchild!: Function;
 
   pawns_on_tile : Pawn[] = [];
   rand: number = 0;
   pawns: Pawn[] = [];
 
   invokeParentFunction = () => {
-    console.log('clicked from GameBoardTile');
     this.throw_dice_to_grandchild();
     
   }
@@ -55,5 +55,9 @@ export class GameBoardTileComponent implements OnInit, OnChanges{
     this.move_pawn(pawn);
   }
 
+  show_possible_move = (pawn:Pawn) =>
+  {
+    this.highlight_move(pawn);
+  }
 
 }

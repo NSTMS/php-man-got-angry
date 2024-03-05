@@ -11,7 +11,8 @@ import { check_game_start, find_game, set_ctx_props, start_refresh_data_interval
 import { FormsModule } from '@angular/forms';
 import { get_session_id } from '../helpers/sessions_helper';
 import { play_sound } from '../helpers/speech_helper';
-import { move_pawn_by_steps } from '../helpers/move_helper';
+import { move_pawn_by_steps, show_possible_move } from '../helpers/move_helper';
+import { retryWhen } from 'rxjs';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -83,9 +84,7 @@ export class AppComponent implements OnInit{
     if(this.game!.current_player!.player_status !== "in_game_moving") return;
     this.dice_value = Math.floor(Math.random() * 6 + 1);
     play_sound(this.dice_value.toString());
-    this.highlight_move();
     console.log(this.dice_value)
-
   }
 
   move_pawn = (pawn:Pawn) =>{
@@ -103,9 +102,17 @@ export class AppComponent implements OnInit{
 
 
 
-  highlight_move = () =>{
-    // tutaj szara kropka gdzie możesz się ruszyć
-    // ale tutaj jeszcze musi być obsługa tego że możesz wyjść pionkiem z bazy
+  highlight_move = (pawn:Pawn) =>{
+    let val = this.dice_value;
+    if(this.game!.current_player!.player_status !== "in_game_moving") return;
+    if(!val) return;
+    if(pawn.status == 'in_finish') return;
+    if((val === 6 || val === 1) && pawn.status === "in_home") val = 0;
+    else if((val !== 6 && val !== 1) && pawn.status === "in_home") return;
+    const possible_pos = show_possible_move(this, pawn, val!);
+    this.game_board.flat()[possible_pos].type = "highlight"
+    console.log(possible_pos)
   }
+
 
 }

@@ -1,10 +1,10 @@
-<div class="tile" [style.backgroundColor]="tile.background_color"> 
+<div class="tile" [style.backgroundColor]="tile.background_color" > 
     <!-- "blank" | "gameboard_tile" | "starting_base" | "ending_base" | "starting_point" | "ending_point" | "dice", -->
 
     @for(p of pawns_on_tile; track p.pawn_id){
-        <div (click)="move(p)" [style.backgroundColor]="p.color" class="pawn">{{index}}</div>
+        <div (click)="move(p)" [style.backgroundColor]="p.color" class="pawn" (mouseover)="show_possible_move(p)">{{index}}</div>
     }
-
+    <!-- {{ index }} -->
     @switch(tile.role)
     {
         @case('dice'){
