@@ -51,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
             "game_id"=>$game_id ,
             "game_players_id" => [$player_id],
             "game_status" => "created",
-            "game_state" => "", // to jeszcze nie wiem dokońca
             "time_left_for_move" => 60,
             "available_player_colors" => ["blue","yellow","green"], // "blue","yellow","green" bo "red" już przypisane do pierwszego gracza,
+            "player_on_move" => $player_id, // id gracza który ma teraz ruch 
             "players_pawns" => [
                 "red" => [
                     ["pawn_id" => 1, "pos" => 12, "color" => "red", "status" => "in_home"],
@@ -63,8 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
                 ],
                 "blue" => [
                     ["pawn_id" => 1, "pos" => 19, "color" => "blue", "status" => "in_home"],
-                    ["pawn_id" => 2, "pos" => 54, "color" => "blue", "status" => "in_home"],
-                    ["pawn_id" => 3, "pos" => 55, "color" => "blue", "status" => "in_home"],
+                    ["pawn_id" => 2, "pos" => 20, "color" => "blue", "status" => "in_home"],
+                    ["pawn_id" => 3, "pos" => 30, "color" => "blue", "status" => "in_home"],
                     ["pawn_id" => 4, "pos" => 31, "color" => "blue", "status" => "in_home"],
                 ],
                 "yellow" => [

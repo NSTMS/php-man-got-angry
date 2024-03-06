@@ -1,4 +1,4 @@
-import { Player } from "./apiResponsesTypes"
+import { Player, PlayerPawns } from "./apiResponsesTypes"
 
 export type Tile = {
     background_color : string, 
@@ -22,8 +22,9 @@ export type Game = {
     players: Player[],
     disabled: "all" | "none",
     game_path: number[],
+    player_on_move : string,
     time_left_for_move: number
-    players_pawns: Record<string, Pawn[]>,
+    players_pawns: PlayerPawns,
 }
 
 

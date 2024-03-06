@@ -25,9 +25,10 @@ export const check_game_start = async (game_id: string) => {
 
 export const update_game = async (ctx: AppComponent) => {
     const req = new ApiRequest("POST", "/update_game.php");
-    const res = await req._exec_post({ "game_id": ctx.game!.game_id, "players_pawns": JSON.stringify(ctx.game!.players_pawns) });
+    const res = await req._exec_post({ "game_id": ctx.game!.game_id, "players_pawns": JSON.stringify(ctx.game!.players_pawns) , "player_id":ctx!.game!.current_player!.player_id});
     const data = await res.json() as Record<string, Pawn[]>;
     ctx.game!.players_pawns = data;
+    if(ctx.game!.game_status === "in_progress") ctx.can_throw_dice = ctx.game!.current_player?.player_id === ctx.game?.player_on_move;
     return data;
 }
 
@@ -41,7 +42,7 @@ export const start_refresh_data_interval = async (ctx: AppComponent) => {
             set_ctx_props(ctx, data!);
         })()
 
-    }, 2000);
+    }, 1000);
 }
 
 const stop_game = (interval: any) => {
@@ -69,7 +70,6 @@ export const set_ctx_props = async (ctx: AppComponent, data: GameAndPlayerData) 
         players_pawns: data.game.players_pawns,
     };
     ctx.players_pawns = structuredClone(data.game.players_pawns);
-
     restore_pawns_positions(ctx.game!.players_pawns);
 }
 

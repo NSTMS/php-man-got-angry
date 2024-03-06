@@ -13,13 +13,13 @@ export type GameResponse = {
     game_id : string,
     game_players_id : string[], 
     game_status : "created" | "in_progress" | "finished"
-    game_state : string // długi jakiś taki
     time_left_for_move : number, //czas na ruch nastepnego gracza
     available_player_colors: string[],
-    players_pawns: Record<string, Pawn[]>, // uzupełnij to w php !!!!
+    players_pawns: PlayerPawns
+    player_on_move: string
 }
 
-
+export type PlayerPawns = Record<string, Pawn[]>
 
 export type GameAndPlayerData = {
     player_id: string ,

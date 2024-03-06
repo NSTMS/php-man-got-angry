@@ -1,5 +1,4 @@
 
-
 .tile{
     border:1px solid black;
     border-collapse: collapse;
@@ -29,14 +28,13 @@
 }
 .highlight {
     outline: 2px solid;
-    outline-color: rgb(208, 90, 251);
-
+    outline-color: #e342cb;
     animation: blink 1s infinite;
 }
 
 @keyframes blink {
     0% {
-        outline-color: rgb(208, 90, 251);
+        outline-color: #e342cb;
         scale: 0.95;
     }
     50% {
@@ -44,7 +42,7 @@
         scale: 1;
     }
     100% {
-        outline-color: rgb(208, 90, 251);
+        outline-color: #e342cb;
         scale: 0.95;
     }
 }
