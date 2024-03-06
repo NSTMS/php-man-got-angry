@@ -27,7 +27,6 @@ export const get_next_position = (pawn: Pawn, path: number[], steps: number): nu
 export const show_possible_move = (ctx: AppComponent, pawn: Pawn, steps: number) => {
     const path = get_pawn_game_path(pawn.color).game_path;
     const nextPosition = get_next_position(pawn, path, steps);
-    // dodaj tutaj żeby kropka się zrobiła na UI
     return nextPosition;
 }
 
@@ -38,11 +37,20 @@ export const move_pawn_by_steps = async (ctx: AppComponent, pawn: Pawn, steps: n
     const nextPosition = get_next_position(pawn, path, steps);
     if(!check_collision(ctx,players_pawns, nextPosition, pawn.color)) return players_pawns;
     
-    const newPawn = { ...pawn, pos: nextPosition, status: 'in_game' } as Pawn;
+    const status = steps == 0 ? "in_home" : "in_game";
+    const newPawn = { ...pawn, pos: nextPosition, status: status } as Pawn;
     ctx.game!.players_pawns = update_pawn_position(players_pawns, newPawn);
     return await update_game(ctx);
 }
-
+export const check_if_player_won = (ctx: AppComponent, color: string) => {
+    const pawns = ctx.game!.players_pawns[color];
+    const base = get_pawn_game_path(color).ending_base_path;
+    const pawns_in_base = pawns.filter(p => base.includes(p.pos));
+    if(pawns_in_base.length === 4) {
+        alert(`Player ${color} won!`)
+        ctx.game!.game_status = "finished";
+    }
+}
 
 export const update_pawn_position = (players_pawns: Record<string, Pawn[]>, pawn: Pawn): Record<string, Pawn[]> => {
     const playerPawns = players_pawns[pawn.color];

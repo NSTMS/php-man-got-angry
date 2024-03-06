@@ -216,7 +216,7 @@ export const gameboard: Tile[][] = [
     { background_color: red_color, role: 'ending_base', type: 'tile' },
     { background_color: red_color, role: 'ending_base', type: 'tile' },
     { background_color: red_color, role: 'ending_base', type: 'tile' },
-    { background_color: bg_color, role: 'dice', type: 'blank' }, // środek układu
+    { background_color: "", role: 'dice', type: 'blank' }, // środek układu
     { background_color: green_color, role: 'ending_base', type: 'tile' },
     { background_color: green_color, role: 'ending_base', type: 'tile' },
     { background_color: green_color, role: 'ending_base', type: 'tile' },

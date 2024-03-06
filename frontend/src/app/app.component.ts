@@ -11,7 +11,7 @@ import { check_game_start, find_game, set_ctx_props, start_refresh_data_interval
 import { FormsModule } from '@angular/forms';
 import { get_session_id } from '../helpers/sessions_helper';
 import { play_sound } from '../helpers/speech_helper';
-import { move_pawn_by_steps, show_possible_move } from '../helpers/move_helper';
+import { check_if_player_won, move_pawn_by_steps, show_possible_move } from '../helpers/move_helper';
 import { retryWhen } from 'rxjs';
 @Component({
   selector: 'app-root',
@@ -84,7 +84,9 @@ export class AppComponent implements OnInit{
     if(this.game!.current_player!.player_status !== "in_game_moving") return;
     this.dice_value = Math.floor(Math.random() * 6 + 1);
     play_sound(this.dice_value.toString());
-    console.log(this.dice_value)
+    const dice = this.game_board.flat().find(tile => tile.role === "dice");
+    dice!.background_color = this.dice_value.toString();
+
   }
 
   move_pawn = (pawn:Pawn) =>{
@@ -95,12 +97,23 @@ export class AppComponent implements OnInit{
     (async ()=>{
       console.log(this.dice_value)
       this.players_pawns = await move_pawn_by_steps(this, pawn, this.dice_value!);
+      check_if_player_won(this, pawn.color);
+    
     })()
    
+    this.remove_highlight_from_pawn(pawn);
     this.dice_value = null;
+    const dice = this.game_board.flat().find(tile => tile.role === "dice");
+    dice!.background_color = "";
+    console.log(this.players_pawns);
+    
+
   }
 
-
+  remove_highlight_from_pawn = (pawn: Pawn) =>{
+    const possible_pos = show_possible_move(this, pawn, this.dice_value!);
+    this.game_board.flat()[possible_pos].type = "tile"
+  }
 
   highlight_move = (pawn:Pawn) =>{
     let val = this.dice_value;

@@ -16,7 +16,7 @@ export class GameBoardTileComponent implements OnInit, OnChanges{
   @Input() tile: Tile = {} as Tile;
   @Input() game : Game = {} as Game;
   @Input() players_pawns: Record<string, Pawn[]> = {};
-
+  @Input() remove_highlight_from_pawn!: (pawn: Pawn) => void;
   @Input() move_pawn!: (pawn:Pawn) => void;
   @Input() highlight_move!: (pawn:Pawn) => void;
   @Input() throw_dice_to_grandchild!: Function;
@@ -58,6 +58,10 @@ export class GameBoardTileComponent implements OnInit, OnChanges{
   show_possible_move = (pawn:Pawn) =>
   {
     this.highlight_move(pawn);
+  }
+
+  remove_highlight = (pawn: Pawn) => {
+    this.remove_highlight_from_pawn(pawn);
   }
 
 }

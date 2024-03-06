@@ -1,3 +1,5 @@
+
+
 .tile{
     border:1px solid black;
     border-collapse: collapse;
@@ -9,14 +11,43 @@
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
+    border-radius:5px;
+    margin:2px;
     gap:2px;
 }
-
+.tile span{
+    width:45px;
+    height:45px;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    font-size:48px; 
+}
 .tile img{
     width:45px;
     height:45px;
 }
+.highlight {
+    outline: 2px solid;
+    outline-color: rgb(208, 90, 251);
 
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0% {
+        outline-color: rgb(208, 90, 251);
+        scale: 0.95;
+    }
+    50% {
+        outline-color: transparent;
+        scale: 1;
+    }
+    100% {
+        outline-color: rgb(208, 90, 251);
+        scale: 0.95;
+    }
+}
 .pawn{
     border:1px solid black;border-radius: 99%; cursor: pointer; width:20px; aspect-ratio: 1/1; display: grid; place-content:center;
 }

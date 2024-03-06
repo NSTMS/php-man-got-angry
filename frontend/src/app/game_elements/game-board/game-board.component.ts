@@ -17,6 +17,7 @@ export class GameBoardComponent{
   @Input() players_pawns: Record<string, Pawn[]> = {};
   @Input() throw_dice_to_child!: Function; 
   @Input() highlight_move!: (pawn:Pawn) => void;
+  @Input() remove_highlight_from_pawn!: (pawn: Pawn) => void;
 
   throw_dice_to_grandchild = () => {
     return this.throw_dice_to_child();

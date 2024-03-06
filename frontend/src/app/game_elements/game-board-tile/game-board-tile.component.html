@@ -1,16 +1,39 @@
-<div class="tile" [style.backgroundColor]="tile.background_color" > 
+<div class="tile" [style.backgroundColor]="tile.background_color" [class.highlight]="tile.type === 'highlight'"> 
     <!-- "blank" | "gameboard_tile" | "starting_base" | "ending_base" | "starting_point" | "ending_point" | "dice", -->
-
     @for(p of pawns_on_tile; track p.pawn_id){
-        <div (click)="move(p)" [style.backgroundColor]="p.color" class="pawn" (mouseover)="show_possible_move(p)">{{index}}</div>
+        <div (click)="move(p)" [style.backgroundColor]="p.color" class="pawn" (mouseover)="show_possible_move(p)" (mouseleave)="remove_highlight(p)"></div>
     }
     <!-- {{ index }} -->
-    @switch(tile.role)
+    @if(tile.role == "dice")
     {
-        @case('dice'){
-            <img src="../../../assets/dice-cube.png" alt="dice" (click)="invokeParentFunction()"/>
+        @switch(tile.background_color)
+        {
+            @case('1'){
+                <span (click)="invokeParentFunction()" class="dice">&#9856;</span>
+
+            }
+            @case('2'){
+                <span (click)="invokeParentFunction()" class="dice">&#9857;</span>
+
+            }
+            @case('3'){
+                <span (click)="invokeParentFunction()" class="dice">&#9858;</span>
+
+            }
+            @case('4'){
+                <span (click)="invokeParentFunction()" class="dice">&#9859;</span>
+            }
+            @case('5'){
+                <span (click)="invokeParentFunction()" class="dice">&#9860;</span>
+
+            }
+            @case('6'){
+                <span (click)="invokeParentFunction()" class="dice">&#9861;</span>
+            }
+            @default {
+            <img src="../../../assets/dice-cube.png" (click)="invokeParentFunction()"  alt="dice"/>
+
+            }
         }
     }
-
-    <!-- <b>{{ tile.type }}</b> -->
 </div>
