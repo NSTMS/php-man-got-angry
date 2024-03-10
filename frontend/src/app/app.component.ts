@@ -11,7 +11,8 @@ import { check_game_start, find_game, set_ctx_props, start_refresh_data_interval
 import { FormsModule } from '@angular/forms';
 import { get_session_id } from '../helpers/sessions_helper';
 import { play_sound } from '../helpers/speech_helper';
-import { move_pawn_by_steps, show_possible_move } from '../helpers/move_helper';
+import { check_if_player_can_move, move_pawn_by_steps, show_possible_move } from '../helpers/move_helper';
+import { ApiRequest } from '../helpers/api_helpers';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -27,12 +28,13 @@ export class AppComponent implements OnInit {
   players_pawns: PlayerPawns = {};
   voicesArray: SpeechSynthesisVoice[] = [];
   dice_value: number | null = null;
-  can_throw_dice: boolean = true;
+  can_throw_dice: boolean = false;
 
   ngOnInit() {
     (async () => {
       const session_id = get_session_id();
       const restored_game: GameAndPlayerData | null = await find_game(session_id);
+      
       if (restored_game) {
         await set_ctx_props(this, restored_game);
         await start_refresh_data_interval(this);
@@ -40,7 +42,6 @@ export class AppComponent implements OnInit {
     })();
 
     this.voicesArray = speechSynthesis.getVoices();
-    console.log(this.voicesArray);
     if (speechSynthesis.onvoiceschanged !== undefined) {
       speechSynthesis.onvoiceschanged = this.populateVoiceList;
     }
@@ -74,43 +75,71 @@ export class AppComponent implements OnInit {
   }
 
 
-  throw_dice = () => {
-    if(!this.can_throw_dice) return;
+  throw_dice = async () => {
+    if (!this.can_throw_dice) return;
+    if (this.dice_value) return;
     if (this.game!.current_player!.player_status !== "in_game_moving") return;
     if (this.game!.current_player!.player_color !== this.game!.player_color) return;
-    this.dice_value = Math.floor(Math.random() * 6 + 1);
-    play_sound(this.dice_value.toString());
+
     const dice = this.game_board.flat().find(tile => tile.role === "dice");
-    dice!.background_color = this.dice_value.toString();
-    this.can_throw_dice = false;
+
+    const req = new ApiRequest("POST", "/throw_dice.php");
+    const res = await req._exec_post({ "session_id": localStorage.getItem('session_id') });
+    const data = await res.json();
+    
+    if(data.error){
+      console.log(data.error);
+      dice!.background_color = "";
+      this.dice_value = null;
+      return;      
+    }
+
+    this.dice_value = data.dice_val;
+    play_sound(this.dice_value!.toString());
+
+    dice!.background_color = this.dice_value!.toString();
+
+    const { can_move, blinking } = check_if_player_can_move(this.players_pawns[this.game!.player_color], this.game!.player_color, this.dice_value!);
+    if (!can_move) {
+      (async () => {
+        // const date = new Date();
+        // console.log(date.toLocaleTimeString(),'cant move at all'); 
+        this.players_pawns = await update_game(this);
+      })();
+      this.dice_value = null;
+      dice!.background_color = "";
+    } 
+    else {
+      blinking.forEach(pawn => {
+        this.game_board.flat()[pawn.pos].blinking = true;
+      });
+    }
   }
 
-  move_pawn = async (pawn: Pawn) => {
+  move_pawn = async (pawn: Pawn) => {    
+    if (!this.dice_value) return;
+    if (this.game!.current_player!.player_id !== this.game!.player_on_move) return;
     if (this.game!.current_player!.player_status !== "in_game_moving") return;
     if (this.game!.current_player!.player_color !== pawn.color) return;
-    if ((this.dice_value === 6 || this.dice_value === 1) && pawn.status === "in_home") this.dice_value = 0;
-    else if ((this.dice_value !== 6 && this.dice_value !== 1) && pawn.status === "in_home") 
-    {
-      this.dice_value = null;
-      const dice = this.game_board.flat().find(tile => tile.role === "dice");
-      dice!.background_color = "";
-      const pawns = await update_game(this);
-      this.players_pawns = pawns;
+    if ((this.dice_value !== 6 && this.dice_value !== 1) && pawn.status === "in_home") return;
+    if ((this.dice_value === 6 || this.dice_value === 1) && pawn.status === "in_home") this.dice_value = 0;  
 
-    }
-    (async () => {
-      this.players_pawns = await move_pawn_by_steps(this, pawn, this.dice_value!);
-    })()
-
-    this.remove_highlight_from_pawn(pawn);
-    this.dice_value = null;
+    this.players_pawns = await move_pawn_by_steps(this, pawn, this.dice_value!);
+    this.remove_highlight_from_pawn(pawn);  
     const dice = this.game_board.flat().find(tile => tile.role === "dice");
     dice!.background_color = "";
+
+    this.dice_value = null; 
+    if(this.game!.current_player!.player_id !== this.game!.player_on_move) this.can_throw_dice = true;  
+    Object.values(this.players_pawns).flat().forEach(pawn => {
+      this.game_board.flat()[pawn.pos].blinking = false;
+    });
   }
 
   remove_highlight_from_pawn = (pawn: Pawn) => {
-    const possible_pos = show_possible_move(this, pawn, this.dice_value!);
-    this.game_board.flat()[possible_pos].type = "tile"
+    const possible_pos = show_possible_move(pawn, this.dice_value!);
+    if (possible_pos === -1) return;
+    this.game_board.flat()[possible_pos!].type = "tile"
   }
 
   highlight_move = (pawn: Pawn) => {
@@ -121,10 +150,8 @@ export class AppComponent implements OnInit {
     if (pawn.status == 'in_finish') return;
     if ((val === 6 || val === 1) && pawn.status === "in_home") val = 0;
     else if ((val !== 6 && val !== 1) && pawn.status === "in_home") return;
-    const possible_pos = show_possible_move(this, pawn, val!);
+    const possible_pos = show_possible_move(pawn, val!);
+    if (possible_pos === -1) return;
     this.game_board.flat()[possible_pos].type = "highlight"
-    console.log(possible_pos)
   }
-
-
 }

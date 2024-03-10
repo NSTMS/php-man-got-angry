@@ -2,6 +2,7 @@ import { Player, PlayerPawns } from "./apiResponsesTypes"
 
 export type Tile = {
     background_color : string, 
+    blinking: boolean,
     role : "blank" | "gameboard_tile" | "starting_base" | "ending_base" | "starting_point" | "ending_point" | "dice",
     type: "blank" | "tile" | "highlight",
 }

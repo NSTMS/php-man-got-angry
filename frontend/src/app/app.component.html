@@ -1,42 +1,43 @@
-
-@if(game){
-    ID: {{ game.game_id }}
-    STATUS: {{ game.game_status }}
-    <br><hr>
-    @for(player of game.players; track player.player_id)
-    {
-        &nbsp;
-        @if(player.player_id === game.current_player?.player_id)
-        {
-            <b [style.color]="player.player_color">[{{player.player_name}}]</b>
-            <label for="player_status"> {{player.player_status}}</label>
-            @if(game!.game_status == "created")
+<div class="game-container">
+    @if(game){
+        <div class="game-info">
+            <p>ID: {{ game.game_id }}</p>
+            <p>STATUS: {{ game.game_status }}</p>
+        </div>
+        <hr class="divider">
+        <div class="player-list">
+            @for(player of game.players; track player.player_id)
             {
-                <input type="checkbox" name="player_status" [(ngModel)]="game!.player_status" (input)="change_status($event)">
+                <div class="player">
+                    @if(player.player_id === game.current_player?.player_id)
+                    {
+                        <b class="player-name" [style.color]="player.player_color">[{{player.player_name}}]</b>
+                        <label for="player_status" class="player-status"> {{player.player_status}}</label>
+                        @if(game!.game_status == "created")
+                        {
+                            <input type="checkbox" name="player_status" class="player-status-checkbox" [(ngModel)]="game!.player_status" (input)="change_status($event)">
+                        }
+                    }@else{
+                        <span class="player-name" [style.color]="player.player_color">{{player.player_name}} </span>
+                        <span class="player-status"> {{player.player_status}}</span> 
+                    }
+                </div>
             }
-            {{ game.time_left_for_move }}
-
-        }@else{
-            <span [style.color]="player.player_color">{{player.player_name}} </span>
-            <span> {{player.player_status}}</span> 
-        }
+        </div>
+        <hr class="divider">
+        <app-game-board class="game-board" [board]="game_board" [game]='game' [players_pawns]="players_pawns" [throw_dice_to_child]="throw_dice" [move_pawn]="move_pawn" [highlight_move]="highlight_move" [remove_highlight_from_pawn]="remove_highlight_from_pawn"></app-game-board>
     }
-    <hr>
-
-
-<app-game-board  [board]="game_board" [game]='game' [players_pawns]="players_pawns" [throw_dice_to_child]="throw_dice" [move_pawn]="move_pawn" [highlight_move]="highlight_move" [remove_highlight_from_pawn]="remove_highlight_from_pawn"></app-game-board>
-  
-}
-@else{
-    <label for="nickname">enter nickname: </label>
-    <input required type="text" name="nickname" id="nickname" (input)="nickname_change($event)">
-    <button (click)="add_player()">add player</button>
-    <select>
-        @for(option of voicesArray; track option.name)
-        {
-            <option value="{{option.name}}">{{option.name}}</option>
-        }
-    </select>
-    
-    <!-- {{nickname()}} -->
-}
+    @else{
+        <div class="form-container">
+            <label for="nickname" class="form-label">Enter nickname: </label>
+            <input required type="text" name="nickname" id="nickname" class="form-input" (input)="nickname_change($event)">
+            <button class="form-button" (click)="add_player()">Add Player</button>
+            <select class="form-select">
+                @for(option of voicesArray; track option.name)
+                {
+                    <option value="{{option.name}}">{{option.name}}</option>
+                }
+            </select>
+        </div>
+    }
+</div>

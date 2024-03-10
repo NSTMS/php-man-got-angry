@@ -25,10 +25,10 @@ export const check_game_start = async (game_id: string) => {
 
 export const update_game = async (ctx: AppComponent) => {
     const req = new ApiRequest("POST", "/update_game.php");
-    const res = await req._exec_post({ "game_id": ctx.game!.game_id, "players_pawns": JSON.stringify(ctx.game!.players_pawns) , "player_id":ctx!.game!.current_player!.player_id});
+    const res = await req._exec_post({"session_id": localStorage.getItem('session_id') ,"players_pawns": JSON.stringify(ctx.game!.players_pawns) });
     const data = await res.json() as Record<string, Pawn[]>;
     ctx.game!.players_pawns = data;
-    if(ctx.game!.game_status === "in_progress") ctx.can_throw_dice = ctx.game!.current_player?.player_id === ctx.game?.player_on_move;
+    if(ctx.game!.game_status === "in_progress") ctx.can_throw_dice = ctx.game!.current_player!.player_id === ctx.game!.player_on_move;
     return data;
 }
 
@@ -42,17 +42,18 @@ export const start_refresh_data_interval = async (ctx: AppComponent) => {
             set_ctx_props(ctx, data!);
         })()
 
-    }, 1000);
+    }, 3000);
 }
 
-const stop_game = (interval: any) => {
+export const stop_game = (interval: any) => {
     clearInterval(interval);
     localStorage.clear();
-    alert("nie mieszaj nic w sesji bro");
     window.location.reload();
 }
 
 export const set_ctx_props = async (ctx: AppComponent, data: GameAndPlayerData) => {
+    if(!data) return;
+    
     const player = await get_player_by_id(data.player_id);
     const players = await get_game_players(data.game.game_id);
     const game = structuredClone(ctx.game!)
@@ -62,40 +63,16 @@ export const set_ctx_props = async (ctx: AppComponent, data: GameAndPlayerData) 
         current_player: player,
         player_color: data.player_color,
         players: players,
-        disabled: data.game.game_status === 'in_progress' ? "all" : 'none',
+        disabled: data.game.game_status === 'in_progress' ? "all" : (ctx.can_throw_dice ? "all" : "none"),
         game_path: game_paths[data.player_color].game_path,
         game_status: data.game.game_status,
         player_status: player?.player_status === "in_lobby_ready",
         time_left_for_move: data.game.time_left_for_move,
         players_pawns: data.game.players_pawns,
+        player_on_move: data.game.player_on_move,
     };
+    ctx.can_throw_dice = false;
+    if(ctx.game!.current_player!.player_id === ctx.game!.player_on_move) ctx.can_throw_dice = true;  
     ctx.players_pawns = structuredClone(data.game.players_pawns);
     restore_pawns_positions(ctx.game!.players_pawns);
-}
-
-let players_pawns: Record<string, Pawn[]> = {
-    "red": [
-        { pawn_id: 1, pos: 10, color: "red", status: "in_home" },
-        { pawn_id: 2, pos: 11, color: "red", status: "in_home" },
-        { pawn_id: 3, pos: 23, color: "red", status: "in_home" },
-        { pawn_id: 4, pos: 24, color: "red", status: "in_home" },
-    ],
-    "blue": [
-        { pawn_id: 1, pos: 19, color: "blue", status: "in_home" },
-        { pawn_id: 2, pos: 20, color: "blue", status: "in_home" },
-        { pawn_id: 3, pos: 30, color: "blue", status: "in_home" },
-        { pawn_id: 4, pos: 31, color: "blue", status: "in_home" },
-    ],
-    "yellow": [
-        { pawn_id: 1, pos: 89, color: "yellow", status: "in_home" },
-        { pawn_id: 2, pos: 90, color: "yellow", status: "in_home" },
-        { pawn_id: 3, pos: 100, color: "yellow", status: "in_home" },
-        { pawn_id: 4, pos: 101, color: "yellow", status: "in_home" },
-    ],
-    "green": [
-        { pawn_id: 1, pos: 96, color: "green", status: "in_home" },
-        { pawn_id: 2, pos: 97, color: "green", status: "in_home" },
-        { pawn_id: 3, pos: 107, color: "green", status: "in_home" },
-        { pawn_id: 4, pos: 108, color: "green", status: "in_home" },
-    ],
 }

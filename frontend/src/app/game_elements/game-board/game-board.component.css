@@ -1,11 +1,8 @@
-.board{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    max-width: 550px;
-    margin: 0 auto;
-}
-.tiles{
-    display: flex;
+.board {
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    grid-template-rows: repeat(11, 1fr);
+    max-width: 600px; /* Ensure the grid does not exceed the viewport width */
+    max-height: 600px;
+    margin: 0 auto; /* Center the grid */
 }

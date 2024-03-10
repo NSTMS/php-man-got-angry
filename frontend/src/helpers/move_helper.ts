@@ -12,20 +12,27 @@ export const get_pawn_game_path = (color: string) => {
     }
     return path;
 }
-
+export const check_if_player_can_move = (pawns: Pawn[], color: string, steps: number): {can_move:boolean, blinking: Pawn[]} => {
+    const path = get_pawn_game_path(color).game_path;
+    const can_move : Pawn[] = []
+    pawns.forEach(pawn => {
+      if (pawn.status === "in_home" && (steps === 6 || steps === 1)) can_move.push(pawn);
+      if (pawn.status === "in_game" && path.indexOf(pawn.pos) + steps <= 43) can_move.push(pawn)
+    })
+    return {can_move: can_move.length > 0, blinking: can_move};
+}
+  
 export const get_next_position = (pawn: Pawn, path: number[], steps: number): number => {
     const currentIndex = path.indexOf(pawn.pos);
     const nextIndex = (currentIndex + steps);
-
     if (pawn.status === "in_home") return path[0];
-    if (currentIndex === -1) throw new Error(`Pawn's current position ${pawn.pos} not found in game path`);
-    if (nextIndex > path.length - 1) return path[currentIndex]; 
-
+    if (currentIndex === -1) return -1;
+    if (nextIndex > path.length - 1) return -1; 
     return path[nextIndex];
 }
 
 
-export const show_possible_move = (ctx: AppComponent, pawn: Pawn, steps: number) => {
+export const show_possible_move = (pawn: Pawn, steps: number) => {
     const path = get_pawn_game_path(pawn.color).game_path;
     const nextPosition = get_next_position(pawn, path, steps);
     return nextPosition;
@@ -33,10 +40,11 @@ export const show_possible_move = (ctx: AppComponent, pawn: Pawn, steps: number)
 
 
 export const move_pawn_by_steps = async (ctx: AppComponent, pawn: Pawn, steps: number): Promise<PlayerPawns> => {
+    
     const players_pawns = ctx.game!.players_pawns;
     const path = get_pawn_game_path(pawn.color).game_path;
     const nextPosition = get_next_position(pawn, path, steps);
-    if(!check_collision(ctx,players_pawns, nextPosition, pawn.color)) return players_pawns;
+    if(!check_collision(ctx,players_pawns, nextPosition!, pawn.color)) return players_pawns;
     
     const status = steps == 0 ? "in_game" : pawn.status
     const newPawn = { ...pawn, pos: nextPosition, status: status } as Pawn;
@@ -50,9 +58,9 @@ export const check_if_player_won = (ctx: AppComponent, color: string) => {
     const base = get_pawn_game_path(color).ending_base_path;
     const pawns_in_base = pawns.filter(p => base.includes(p.pos));
     if(pawns_in_base.length === 4) {
-        // send to api
-        
-        alert(`Player ${color} won!`)
+        alert(`Player ${color} won!`);
+        localStorage.clear();
+        window.location.reload();
     }
 }
 

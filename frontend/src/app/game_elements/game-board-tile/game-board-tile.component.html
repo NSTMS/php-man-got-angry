@@ -1,7 +1,7 @@
-<div class="tile" [style.backgroundColor]="tile.background_color" [class.highlight]="tile.type === 'highlight'"> 
+<div class="tile" [style.backgroundColor]="tile.background_color" [class.highlight]="tile.type === 'highlight'" > 
     <!-- "blank" | "gameboard_tile" | "starting_base" | "ending_base" | "starting_point" | "ending_point" | "dice", -->
     @for(p of pawns_on_tile; track p.pawn_id){
-        <div (click)="move(p)" [style.backgroundColor]="p.color" class="pawn" (mouseover)="show_possible_move(p)" (mouseleave)="remove_highlight(p)"></div>
+        <div (click)="move(p)" [class.blinking]="tile.blinking" [style.backgroundColor]="p.color" class="pawn" (mouseover)="show_possible_move(p)" (mouseleave)="remove_highlight(p)"></div>
     }
     <!-- {{ index }} -->
     @if(tile.role == "dice")

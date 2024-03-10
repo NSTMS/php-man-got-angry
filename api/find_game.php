@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['session_id'])){
         }
         if(!is_null($game))
         {
-            $_SESSSION['game'] = $game;
+            $_SESSSION['game_id'] = $game['game_id'];
             $_SESSSION['player_color'] = $player_color; 
             $response = ["player_id"=>$player_id, "game"=> $game ,"player_color"=> $player_color];
         }

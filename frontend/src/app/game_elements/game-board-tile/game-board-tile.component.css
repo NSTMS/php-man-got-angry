@@ -1,51 +1,76 @@
-
-.tile{
-    border:1px solid black;
-    border-collapse: collapse;
-    width:50px;
-    height:50px;
-    font-size:10px;
-    text-overflow: clip;
+.tile {
+    border: 1px solid black;
+    width: 100%; /* Make the tile width responsive */
+    aspect-ratio: 1/1; /* Adjust height automatically based on content */
+    font-size: 1rem; /* Use relative units for font size */
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: wrap;
-    border-radius:5px;
-    margin:2px;
-    gap:2px;
+    border-radius: 5px;
+    scale:0.9;    
+    font-size: 2.5rem; /* Use relative units for font size */
+
 }
-.tile span{
-    width:45px;
-    height:45px;
+
+.tile span {
+    width: 90%; /* Adjust width to be relative to the parent */
+    height: auto; /* Adjust height automatically based on content */
     display: grid;
     place-content: center;
     cursor: pointer;
-    font-size:48px; 
 }
-.tile img{
-    width:45px;
-    height:45px;
+
+.tile img {
+    max-width: 100%; /* Ensure images are responsive */
+    height: auto; /* Maintain aspect ratio */
 }
+
+/* Example media query for smaller screens */
+@media (max-width: 600px) {
+    .tile {
+        font-size: 0.8rem; /* Adjust font size for smaller screens */
+    }
+}
+
+
 .highlight {
     outline: 2px solid;
     outline-color: #e342cb;
     animation: blink 1s infinite;
 }
 
+@keyframes blinking {
+    0% {
+        scale: 1;
+    }
+    50% {
+        scale: 1.15;
+    }
+    100% {
+        scale: 1;
+    }
+}
+
 @keyframes blink {
     0% {
         outline-color: #e342cb;
-        scale: 0.95;
+        scale: 0.9;
     }
     50% {
         outline-color: transparent;
-        scale: 1;
+        scale: 0.87;
     }
     100% {
         outline-color: #e342cb;
-        scale: 0.95;
+        scale: 0.9;
     }
 }
 .pawn{
     border:1px solid black;border-radius: 99%; cursor: pointer; width:20px; aspect-ratio: 1/1; display: grid; place-content:center;
 }
+
+.blinking{
+    animation: blinking 1s infinite;
+}
+

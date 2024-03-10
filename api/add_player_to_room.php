@@ -35,7 +35,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
         $game_id = $potential_game_to_join["game_id"];
         $player_color = array_shift($potential_game_to_join['available_player_colors']);
         $current_game = $potential_game_to_join;
- 
 
         $rooms_db->_update($potential_game_to_join["_id"],
         [
@@ -51,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
             "game_id"=>$game_id ,
             "game_players_id" => [$player_id],
             "game_status" => "created",
-            "time_left_for_move" => 60,
             "available_player_colors" => ["blue","yellow","green"], // "blue","yellow","green" bo "red" już przypisane do pierwszego gracza,
             "player_on_move" => $player_id, // id gracza który ma teraz ruch 
             "players_pawns" => [
@@ -81,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
                 ],
             ]
         ];
-        $rooms_db->_insert($current_game);
+        $current_game = $rooms_db->_insert($current_game);
     }
 
     $players_db->_insert([
@@ -95,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
     session_start();
     $_SESSION['player_id'] = $player_id;
     $_SESSION['player_color'] = $player_color;
-    $_SESSION['game'] = $current_game;
+    $_SESSION['game_id'] = $game_id;
 
     $response = ["player_id"=>$player_id, "game"=> $current_game ,"player_color"=> $player_color, "session_id"=>session_id()];
     echo json_encode($response);

@@ -1,4 +1,4 @@
-import { Pawn } from "./gameTypes"
+import { Game, Pawn } from "./gameTypes"
 
 export type Player = {
     player_id : string,
@@ -24,7 +24,7 @@ export type PlayerPawns = Record<string, Pawn[]>
 export type GameAndPlayerData = {
     player_id: string ,
     player_color: string 
-    game: GameResponse,
+    game: Game,
     session_id: string
 }
 
