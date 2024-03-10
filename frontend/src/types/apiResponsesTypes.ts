@@ -1,4 +1,4 @@
-import { Pawn } from "./gameTypes"
+import { Game, Pawn } from "./gameTypes"
 
 export type Player = {
     player_id : string,
@@ -9,22 +9,13 @@ export type Player = {
     player_figures_position: number[], // tablica z indexami pól na których stoją pionki
 }
 
-export type GameResponse = {
-    game_id : string,
-    game_players_id : string[], 
-    game_status : "created" | "in_progress" | "finished"
-    time_left_for_move : number, //czas na ruch nastepnego gracza
-    available_player_colors: string[],
-    players_pawns: PlayerPawns
-    player_on_move: string
-}
 
 export type PlayerPawns = Record<string, Pawn[]>
 
 export type GameAndPlayerData = {
     player_id: string ,
     player_color: string 
-    game: GameResponse,
+    game: Game,
     session_id: string
 }
 

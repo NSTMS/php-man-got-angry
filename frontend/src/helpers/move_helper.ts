@@ -3,6 +3,7 @@ import { AppComponent } from "../app/app.component";
 import { game_paths } from "../assets/gameboard";
 import { PlayerPawns } from "../types/apiResponsesTypes";
 import { Pawn } from "../types/gameTypes";
+import { ApiRequest } from "./api_helpers";
 import { update_game } from "./game_helpers";
 
 export const get_pawn_game_path = (color: string) => {

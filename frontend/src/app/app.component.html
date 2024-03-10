@@ -14,12 +14,12 @@
             {
                 <input type="checkbox" name="player_status" [(ngModel)]="game!.player_status" (input)="change_status($event)">
             }
-            {{ game.time_left_for_move }}
 
         }@else{
             <span [style.color]="player.player_color">{{player.player_name}} </span>
             <span> {{player.player_status}}</span> 
         }
+        {{ player.player_id}}
     }
     <hr>
 

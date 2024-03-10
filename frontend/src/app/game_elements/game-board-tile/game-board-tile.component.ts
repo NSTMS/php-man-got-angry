@@ -51,7 +51,7 @@ export class GameBoardTileComponent implements OnInit, OnChanges{
   }
   
   move = (pawn: Pawn) => {
-    console.log(this.pawns_on_tile!)
+    // console.log(this.pawns_on_tile!)
     this.move_pawn(pawn);
   }
 

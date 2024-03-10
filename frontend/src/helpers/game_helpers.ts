@@ -28,7 +28,7 @@ export const update_game = async (ctx: AppComponent) => {
     const res = await req._exec_post({ "game_id": ctx.game!.game_id, "players_pawns": JSON.stringify(ctx.game!.players_pawns) , "player_id":ctx!.game!.current_player!.player_id});
     const data = await res.json() as Record<string, Pawn[]>;
     ctx.game!.players_pawns = data;
-    if(ctx.game!.game_status === "in_progress") ctx.can_throw_dice = ctx.game!.current_player?.player_id === ctx.game?.player_on_move;
+    if(ctx.game!.game_status === "in_progress") ctx.can_throw_dice = ctx.game!.current_player!.player_id === ctx.game!.player_on_move;
     return data;
 }
 
@@ -48,7 +48,7 @@ export const start_refresh_data_interval = async (ctx: AppComponent) => {
 const stop_game = (interval: any) => {
     clearInterval(interval);
     localStorage.clear();
-    alert("nie mieszaj nic w sesji bro");
+    // alert("nie mieszaj w sesji bro");
     window.location.reload();
 }
 
@@ -66,9 +66,11 @@ export const set_ctx_props = async (ctx: AppComponent, data: GameAndPlayerData) 
         game_path: game_paths[data.player_color].game_path,
         game_status: data.game.game_status,
         player_status: player?.player_status === "in_lobby_ready",
-        time_left_for_move: data.game.time_left_for_move,
         players_pawns: data.game.players_pawns,
+        has_moved: data.game.has_moved,
+        player_on_move: data.game.player_on_move
     };
+    ctx.can_throw_dice = ctx.dice_value! != 0 && ctx.game!.current_player!.player_id === ctx.game!.player_on_move && !ctx.game!.has_moved;
     ctx.players_pawns = structuredClone(data.game.players_pawns);
     restore_pawns_positions(ctx.game!.players_pawns);
 }

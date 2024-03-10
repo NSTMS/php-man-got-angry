@@ -26,10 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['game_id']) && isset($
         if($ind > count($new_game['game_players_id']) -1 ){
             $ind = 0;
         }
-        $new_game['player_on_move'] = $new_game['available_player_colors'][$ind];     
-        $new_game['player_color'] = $new_game['available_player_colors'][$ind];
-        $new_game['time_left_for_move'] = 60;
+        $new_game['player_on_move'] = $new_game['game_players_id'][$ind];     
         $player['player_status'] = "in_game_waiting";
+        $new_game['has_moved'] = false;
         $next_player = $player_db->_get_by(['player_id',"=",$new_game['game_players_id'][$ind]])[0];
         $next_player['player_status'] = "in_game_moving";
         $player_db->_update_data($next_player);

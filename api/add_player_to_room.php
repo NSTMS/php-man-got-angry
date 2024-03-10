@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])){
             "game_id"=>$game_id ,
             "game_players_id" => [$player_id],
             "game_status" => "created",
-            "time_left_for_move" => 60,
+            "has_moved" => false,
             "available_player_colors" => ["blue","yellow","green"], // "blue","yellow","green" bo "red" już przypisane do pierwszego gracza,
             "player_on_move" => $player_id, // id gracza który ma teraz ruch 
             "players_pawns" => [

@@ -23,7 +23,7 @@ export type Game = {
     disabled: "all" | "none",
     game_path: number[],
     player_on_move : string,
-    time_left_for_move: number
+    has_moved: boolean,
     players_pawns: PlayerPawns,
 }
 

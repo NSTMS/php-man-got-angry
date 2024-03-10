@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Game, Pawn, Tile } from '../../../types/gameTypes';
 import { gameboard } from '../../../assets/gameboard';
 import { CommonModule } from '@angular/common';
@@ -19,9 +19,8 @@ export class GameBoardComponent{
   @Input() highlight_move!: (pawn:Pawn) => void;
   @Input() remove_highlight_from_pawn!: (pawn: Pawn) => void;
 
-  throw_dice_to_grandchild = () => {
-    return this.throw_dice_to_child();
-  }
+  throw_dice_to_grandchild = () => this.throw_dice_to_child();
+
   show_possible_move = (pawn:Pawn) => this.highlight_move(pawn);
   
   move = (pawn:Pawn) => this.move_pawn(pawn)
