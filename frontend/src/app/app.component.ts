@@ -74,6 +74,10 @@ export class AppComponent implements OnInit {
     await check_game_start(this.game!.game_id);
   }
 
+  change_lang = (event: Event) =>{
+    const lang = (event.target as HTMLInputElement).value;
+    localStorage.setItem('lang', lang);
+  } 
 
   throw_dice = async () => {
     if (!this.can_throw_dice) return;

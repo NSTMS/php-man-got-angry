@@ -1,10 +1,9 @@
 <div class="game-container">
     @if(game){
         <div class="game-info">
-            <p>ID: {{ game.game_id }}</p>
-            <p>STATUS: {{ game.game_status }}</p>
+            <p>ID: <span>{{ game.game_id }} </span></p>
+            <p>STATUS: <span>{{ game.game_status }}</span> </p>
         </div>
-        <hr class="divider">
         <div class="player-list">
             @for(player of game.players; track player.player_id)
             {
@@ -24,7 +23,6 @@
                 </div>
             }
         </div>
-        <hr class="divider">
         <app-game-board class="game-board" [board]="game_board" [game]='game' [players_pawns]="players_pawns" [throw_dice_to_child]="throw_dice" [move_pawn]="move_pawn" [highlight_move]="highlight_move" [remove_highlight_from_pawn]="remove_highlight_from_pawn"></app-game-board>
     }
     @else{
@@ -32,7 +30,7 @@
             <label for="nickname" class="form-label">Enter nickname: </label>
             <input required type="text" name="nickname" id="nickname" class="form-input" (input)="nickname_change($event)">
             <button class="form-button" (click)="add_player()">Add Player</button>
-            <select class="form-select">
+            <select class="form-select" (input)="change_lang($event)">
                 @for(option of voicesArray; track option.name)
                 {
                     <option value="{{option.name}}">{{option.name}}</option>

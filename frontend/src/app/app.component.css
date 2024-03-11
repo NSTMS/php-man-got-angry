@@ -1,4 +1,43 @@
 
+.game-info, .player-list, .game-board {
+    margin: 10px;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+
+/* Game Info Styles */
+.game-info p {
+    margin: 0 0 10px;
+}
+.game-info p span{
+    font-weight: bold;
+}
+
+/* Player List Styles */
+.player-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.player-name {
+    font-weight: bold;
+}
+
+.player-status {
+    color: #666;
+}
+
 .form-container{
     margin-top: 20px;
     margin-bottom: 20px;

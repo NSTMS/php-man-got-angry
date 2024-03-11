@@ -1,5 +1,5 @@
 import { Header } from "./classes/headers_helper";
-import { protocol,host,port,dir } from "../assets/connection";
+import { protocol,host,dir } from "../assets/connection";
 import type { ApiMethodType } from "../types/apiMethodType";
 export class ApiRequest{
     method: ApiMethodType ;
@@ -16,7 +16,7 @@ export class ApiRequest{
 
     async _exec_get(){
         try {
-            return await fetch(`${protocol}://${host}:${port}/${dir}${this.params}`,{
+            return await fetch(`${protocol}://${host}/${dir}${this.params}`,{
                 method:this.method,
                 headers:this.headers as {},
             })
@@ -28,7 +28,7 @@ export class ApiRequest{
     async _exec_post(body: Record<string, any> = {}) {
         try {
             const formData =  ApiRequestHelper._prepare_body(body);
-            return await fetch(`${protocol}://${host}:${port}/${dir}${this.params}`,{
+            return await fetch(`${protocol}://${host}/${dir}${this.params}`,{
                 method:this.method,
                 headers:this.headers as {},
                 body: formData
